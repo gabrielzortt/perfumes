@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Turbinado | Perfumes da Gi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: { 
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                    },
+                    colors: { 
+                        gold: { DEFAULT: '#D4AF37', light: '#F9F1D8' },
+                        midnight: '#0A0A0A'
+                    } 
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-4 md:p-8 font-sans antialiased text-gray-800">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-10 pb-4 border-b-2 border-gold">
+            <h1 class="text-3xl md:text-4xl font-serif font-bold text-midnight tracking-wider">Gestão de Estoque da Gi</h1>
+            <a href="index.html" target="_blank" class="text-gold hover:text-midnight transition flex items-center gap-2">
+                Ver Loja <i class="fas fa-external-link-alt text-sm"></i>
+            </a>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1">
+                <div class="bg-white p-6 rounded-lg shadow-xl sticky top-8 border border-gray-100">
+                    <h2 id="form-title" class="text-2xl font-serif mb-6 text-midnight border-b pb-2 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-gold"></i> Novo Produto
+                    </h2>
+                    
+                    <form id="product-form" class="space-y-5" onsubmit="window.saveProduct(event)">
+                        <input type="hidden" id="prod-id">
+                        
+                        <div class="flex flex-col items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <label class="block text-sm font-bold text-gray-600 self-start">Imagem do Produto</label>
+                            
+                            <div class="w-40 h-40 bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden relative shadow-inner">
+                                <img id="img-preview" src="" alt="Previsualização" class="hidden w-full h-full object-contain p-1">
+                                <div id="img-placeholder" class="text-center text-gray-400 p-2 text-xs font-light">
+                                    <i class="fas fa-image text-3xl mb-2 block"></i>
+                                    A foto aparecerá aqui
+                                </div>
+                                <button type="button" id="btn-remove-img" onclick="window.removeImage()" class="hidden absolute top-1 right-1 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs hover:bg-red-700 shadow">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <label class="cursor-pointer bg-white border border-gray-300 text-midnight py-2 px-4 rounded text-xs hover:border-gold hover:text-gold transition shadow-sm">
+                                <span><i class="fas fa-upload mr-1"></i> Escolher Foto</span>
+                                <input type="file" id="prod-image" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="window.previewFile()">
+                            </label>
+                            <p class="text-[10px] text-gray-400 text-center">Processamento via Cloudinary (Anti-Bloqueio).</p>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-bold text-gray-600 mb-1">Nome do Produto</label>
+                            <input type="text" id="prod-name" placeholder="Ex: Floratta Simple Love" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none" required>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="text-sm font-bold text-gray-600 mb-1">Marca/Setor</label>
+                            <select id="prod-brand" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none bg-white">
+                                <option value="arabes">🌙 Árabes</option>
+                                <option value="brand">⭐ Brand (Coleção)</option>
+                                <option value="oculos">🕶️ Óculos</option>
+                                <option value="bones">🧢 Bonés</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex flex-col">
+                                <label class="text-sm font-bold text-gray-600 mb-1">Preço (R$)</label>
+                                <input type="number" id="prod-price" step="0.01" placeholder="99.90" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none" required>
+                            </div>
+                            <div class="flex flex-col">
+                                <label class="text-sm font-bold text-gray-600 mb-1">Estoque (Qtd)</label>
+                                <input type="number" id="prod-stock" placeholder="0" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none" required>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-3 pt-4 border-t mt-6">
+                            <button type="button" onclick="window.resetForm()" class="flex-1 px-5 py-3 border border-gray-300 rounded hover:bg-gray-100 transition text-sm text-gray-600 uppercase tracking-wider font-semibold">
+                                Limpar / Novo
+                            </button>
+                            <button type="submit" id="btn-save" class="flex-1 px-5 py-3 bg-midnight text-white rounded hover:bg-gold transition text-sm uppercase tracking-wider font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                                Salvar Produto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl border border-gray-100">
+                    <div class="flex flex-wrap justify-between items-center mb-6 border-b pb-4 gap-4">
+                        <h2 class="text-2xl font-serif text-midnight flex items-center gap-2">
+                            <i class="fas fa-list text-gold"></i> Produtos Cadastrados
+                        </h2>
+                        <div class="flex flex-wrap gap-2 items-center">
+                            <!-- Filter by sector pills -->
+                            <div id="filter-pills" class="flex flex-wrap gap-1.5">
+                                <button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill active text-xs px-3 py-1.5 rounded-full border border-midnight bg-midnight text-white transition">Todos</button>
+                                <button onclick="window.setFilter('arabes')" data-filter="arabes" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Árabes</button>
+                                <button onclick="window.setFilter('brand')" data-filter="brand" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Brand</button>
+                                <button onclick="window.setFilter('oculos')" data-filter="oculos" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Óculos</button>
+                                <button onclick="window.setFilter('bones')" data-filter="bones" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Bonés</button>
+                            </div>
+                            <div class="relative w-full md:w-48">
+                                <input type="text" id="admin-search" onkeyup="window.renderTable()" placeholder="Filtrar tabela..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-2 pl-4 pr-10 text-xs focus:border-gold focus:ring-1 focus:ring-gold outline-none">
+                                <i class="fas fa-filter absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-midnight text-white uppercase text-[11px] tracking-wider font-semibold">
+                                    <th class="p-4 rounded-l-sm">Foto</th>
+                                    <th class="p-4">Nome</th>
+                                    <th class="p-4">Setor</th>
+                                    <th class="p-4">Preço</th>
+                                    <th class="p-4">Estoque</th>
+                                    <th class="p-4 rounded-r-sm">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-list" class="text-sm">
+                            </tbody>
+                        </table>
+                        <div id="no-products-msg" class="hidden text-center py-16 text-gray-500 italic">
+                            Nenhum produto cadastrado.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .filter-pill.active {
+            background: #0A0A0A;
+            color: #D4AF37;
+            border-color: #0A0A0A;
+        }
+    </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBzLjq-FsBI7nK97MvF_-FMNEDDakbs3o",
+            authDomain: "elegance-perfum.firebaseapp.com",
+            projectId: "elegance-perfum",
+            storageBucket: "elegance-perfum.firebasestorage.app",
+            messagingSenderId: "12599337514",
+            appId: "1:12599337514:web:b83c321202fc48ba73d953"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let products = [];
+        let selectedFile = null;
+        let currentImageUrl = "";
+        let activeFilter = "todos";
+
+        // Sector map for display
+        const SECTOR_LABELS = {
+            arabes:    'Árabes',
+            arábes:    'Árabes',
+            boticario: 'Árabes',
+            brand:     'Brand',
+            oculos:    'Óculos',
+            óculos:    'Óculos',
+            bones:     'Bonés',
+            bonés:     'Bonés',
+        };
+
+        function getSectorLabel(brand) {
+            return SECTOR_LABELS[(brand || '').toLowerCase()] || (brand || '—');
+        }
+
+        function normalizeBrand(brand) {
+            const b = (brand || '').toLowerCase();
+            if (b === 'arábes' || b === 'boticario') return 'arabes';
+            if (b === 'óculos') return 'oculos';
+            if (b === 'bonés') return 'bones';
+            return b;
+        }
+
+        onSnapshot(collection(db, "produtos"), (snapshot) => {
+            products = [];
+            snapshot.forEach((doc) => {
+                products.push({ id: doc.id, ...doc.data() });
+            });
+            window.renderTable();
+        });
+
+        window.setFilter = function(filter) {
+            activeFilter = filter;
+            document.querySelectorAll('.filter-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.filter === filter);
+            });
+            window.renderTable();
+        }
+
+        window.previewFile = function() {
+            const fileInput = document.getElementById('prod-image');
+            selectedFile = fileInput.files[0];
+
+            if (selectedFile) {
+                const objectUrl = URL.createObjectURL(selectedFile);
+                document.getElementById('img-preview').src = objectUrl;
+                document.getElementById('img-preview').classList.remove('hidden');
+                document.getElementById('img-placeholder').classList.add('hidden');
+                document.getElementById('btn-remove-img').classList.remove('hidden');
+            } else {
+                window.removeImage();
+            }
+        }
+
+        window.removeImage = function() {
+            selectedFile = null;
+            currentImageUrl = "";
+            document.getElementById('prod-image').value = ""; 
+            document.getElementById('img-preview').src = "";
+            document.getElementById('img-preview').classList.add('hidden');
+            document.getElementById('img-placeholder').classList.remove('hidden');
+            document.getElementById('btn-remove-img').classList.add('hidden');
+        }
+
+        window.renderTable = function() {
+            const tbody = document.getElementById('product-list');
+            const noMsg = document.getElementById('no-products-msg');
+            const searchTerm = document.getElementById('admin-search').value.toLowerCase();
+
+            // Sector badge colors
+            const SECTOR_COLORS = {
+                arabes:  'bg-amber-100 text-amber-800',
+                brand:   'bg-purple-100 text-purple-800',
+                oculos:  'bg-sky-100 text-sky-800',
+                bones:   'bg-green-100 text-green-800',
+            };
+            
+            tbody.innerHTML = '';
+            
+            let filteredProducts = products.filter(p => 
+                p.name.toLowerCase().includes(searchTerm) || 
+                (p.brand || '').toLowerCase().includes(searchTerm)
+            );
+
+            if (activeFilter !== 'todos') {
+                filteredProducts = filteredProducts.filter(p => normalizeBrand(p.brand) === activeFilter);
+            }
+
+            if (filteredProducts.length === 0) {
+                noMsg.classList.remove('hidden');
+                return;
+            } else {
+                noMsg.classList.add('hidden');
+            }
+            
+            filteredProducts.forEach(p => {
+                const stockLabel = p.stock > 0 
+                    ? `<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full">${p.stock}</span>` 
+                    : `<span class="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded-full">Esgotado</span>`;
+                
+                const finalImgSrc = p.image || p.img || "";
+                
+                const imgTag = finalImgSrc !== ""
+                    ? `<img src="${finalImgSrc}" alt="${p.name}" class="w-12 h-12 object-contain p-0.5 border rounded-sm">`
+                    : `<div class="w-12 h-12 bg-gray-100 border rounded-sm flex items-center justify-center text-[7px] text-gray-400 font-serif uppercase p-0.5 text-center">sem<br>foto</div>`;
+
+                const sectorKey = normalizeBrand(p.brand);
+                const sectorColor = SECTOR_COLORS[sectorKey] || 'bg-gray-100 text-gray-600';
+                const sectorDisplay = getSectorLabel(p.brand);
+
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-4">${imgTag}</td>
+                        <td class="p-4 font-semibold text-midnight">${p.name}</td>
+                        <td class="p-4"><span class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide ${sectorColor}">${sectorDisplay}</span></td>
+                        <td class="p-4 font-semibold text-gold">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</td>
+                        <td class="p-4">${stockLabel}</td>
+                        <td class="p-4">
+                            <div class="flex gap-2">
+                                <button onclick="window.editProduct('${p.id}')" class="text-blue-500 hover:text-blue-700 p-1.5" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button onclick="window.deleteProduct('${p.id}')" class="text-red-400 hover:text-red-600 p-1.5" title="Excluir"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.saveProduct = async function(e) {
+            e.preventDefault();
+            
+            const btnSave = document.getElementById('btn-save');
+            const idInput = document.getElementById('prod-id').value;
+            const name = document.getElementById('prod-name').value;
+            const brand = document.getElementById('prod-brand').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
+
+            if (!idInput && !selectedFile) {
+                alert("Por favor, escolha uma foto para o novo produto!");
+                return;
+            }
+
+            btnSave.innerText = "Enviando Foto pro Cloudinary...";
+            btnSave.disabled = true;
+
+            let finalImageUrl = currentImageUrl; 
+
+            try {
+                if (selectedFile) {
+                    const formData = new FormData();
+                    formData.append("file", selectedFile);
+                    formData.append("upload_preset", "ml_default"); 
+                    const cloudName = "dzophwnk2"; 
+                    
+                    const urlCloudinary = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+                    const response = await fetch(urlCloudinary, {
+                        method: "POST",
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.secure_url) {
+                        finalImageUrl = data.secure_url;
+                    } else {
+                        throw new Error(data.error?.message || "O Cloudinary recusou a imagem.");
+                    }
+                }
+
+                btnSave.innerText = "Salvando no Banco...";
+
+                const productData = {
+                    name: name,
+                    brand: brand, 
+                    price: price,
+                    stock: stock,
+                    image: finalImageUrl, 
+                    img: finalImageUrl    
+                };
+
+                if (idInput) {
+                    const docRef = doc(db, "produtos", idInput);
+                    await updateDoc(docRef, productData);
+                } else {
+                    await addDoc(collection(db, "produtos"), productData);
+                }
+
+                window.resetForm();
+                alert('Vitória! 🎉 Produto salvo com sucesso!');
+                
+            } catch (error) {
+                console.error(error);
+                alert("ERRO: " + error.message);
+            } finally {
+                btnSave.innerText = "Salvar Produto";
+                btnSave.disabled = false;
+            }
+        }
+
+        window.editProduct = function(id) {
+            const product = products.find(p => p.id === id);
+            
+            document.getElementById('form-title').innerHTML = `<i class="fas fa-edit text-gold"></i> Editar Produto`;
+            document.getElementById('prod-name').focus();
+
+            document.getElementById('prod-id').value = product.id;
+            document.getElementById('prod-name').value = product.name;
+            
+            const brandNorm = normalizeBrand(product.brand);
+            document.getElementById('prod-brand').value = brandNorm;
+            
+            document.getElementById('prod-price').value = product.price;
+            document.getElementById('prod-stock').value = product.stock;
+            
+            selectedFile = null; 
+            currentImageUrl = product.image || product.img || ""; 
+
+            if (currentImageUrl !== "") {
+                document.getElementById('img-preview').src = currentImageUrl;
+                document.getElementById('img-preview').classList.remove('hidden');
+                document.getElementById('img-placeholder').classList.add('hidden');
+                document.getElementById('btn-remove-img').classList.remove('hidden');
+            } else {
+                window.removeImage();
+            }
+
+            // Scroll to form on mobile
+            document.getElementById('product-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        window.deleteProduct = async function(id) {
+            if(confirm('Tem certeza absoluta que deseja remover este produto?')) {
+                try {
+                    await deleteDoc(doc(db, "produtos", id));
+                    if(document.getElementById('prod-id').value === id) window.resetForm();
+                } catch (error) {
+                    alert("Erro ao excluir: " + error.message);
+                }
+            }
+        }
+
+        window.resetForm = function() {
+            document.getElementById('form-title').innerHTML = `<i class="fas fa-plus-circle text-gold"></i> Novo Produto`;
+            document.getElementById('prod-id').value = '';
+            document.getElementById('product-form').reset();
+            window.removeImage();
+        }
+    </script>
+</body>
+</html>
