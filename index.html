@@ -44,6 +44,7 @@
             }
         }
     </script>
+    
     <style>
         html { scroll-behavior: smooth; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -55,6 +56,37 @@
             height: 100%;
             object-fit: contain; 
             padding: 1rem; 
+        }
+
+        /* Sector nav scrollbar hidden on mobile */
+        #sector-nav::-webkit-scrollbar { display: none; }
+        #sector-nav { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .sector-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+            padding: 0.45rem 1.1rem;
+            border-radius: 9999px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #4b5563;
+            background: #fff;
+            transition: all 0.25s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .sector-pill:hover, .sector-pill.active {
+            background: #0A0A0A;
+            color: #D4AF37;
+            border-color: #0A0A0A;
+        }
+        .sector-pill i {
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -68,7 +100,7 @@
             </h1>
             
             <div class="relative w-full md:w-96">
-                <input type="text" id="search-input" onkeyup="window.searchProducts()" placeholder="Buscar perfume por nome ou marca..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-2 pl-5 pr-12 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition">
+                <input type="text" id="search-input" onkeyup="window.searchProducts()" placeholder="Buscar por nome, marca ou setor..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-2 pl-5 pr-12 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition">
                 <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gold">
                     <i class="fas fa-search"></i>
                 </button>
@@ -78,6 +110,12 @@
                 <i class="fas fa-shopping-bag text-2xl group-hover:text-gold transition-colors"></i>
                 <span id="cart-count" class="absolute top-0 right-0 bg-gold text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">0</span>
             </button>
+        </div>
+
+        <!-- Sector navigation bar — pills injected by JS based on active sectors -->
+        <div id="sector-nav-wrapper" class="hidden border-t border-gray-100 bg-white/95">
+            <div id="sector-nav" class="container mx-auto px-4 md:px-6 py-2.5 flex gap-2 overflow-x-auto">
+            </div>
         </div>
     </header>
 
@@ -96,12 +134,14 @@
 
         <div id="no-results" class="hidden text-center py-20 text-gray-500 flex flex-col items-center gap-4">
             <i class="fas fa-search text-5xl opacity-30"></i>
-            <p class="text-xl font-light">Nenhum perfume corresponde à sua busca.</p>
+            <p class="text-xl font-light">Nenhum produto corresponde à sua busca.</p>
             <button onclick="window.clearSearch()" class="text-gold hover:underline">Limpar busca</button>
         </div>
 
-        <div id="section-arabes" class="mb-20 product-section">
+        <!-- Setor: Árabes -->
+        <div id="section-arabes" class="mb-20 product-section scroll-mt-32">
             <div class="text-center mb-10">
+                <span class="text-gold uppercase tracking-[0.25em] text-xs font-semibold mb-2 block"><i class="fas fa-wind mr-1"></i> Setor</span>
                 <h3 class="text-4xl font-serif text-midnight mb-2">Árabes</h3>
                 <div class="w-16 h-px bg-gold mx-auto"></div>
             </div>
@@ -109,12 +149,36 @@
             </div>
         </div>
 
-        <div id="section-brand" class="mb-10 product-section">
+        <!-- Setor: Brand -->
+        <div id="section-brand" class="mb-20 product-section scroll-mt-32">
             <div class="text-center mb-10">
+                <span class="text-gold uppercase tracking-[0.25em] text-xs font-semibold mb-2 block"><i class="fas fa-star mr-1"></i> Setor</span>
                 <h3 class="text-4xl font-serif text-midnight mb-2">Brand <span class="text-xl font-light italic text-gray-500">(Linha Coleção)</span></h3>
                 <div class="w-16 h-px bg-gold mx-auto"></div>
             </div>
             <div id="grid-brand" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            </div>
+        </div>
+
+        <!-- Setor: Óculos -->
+        <div id="section-oculos" class="mb-20 product-section scroll-mt-32">
+            <div class="text-center mb-10">
+                <span class="text-gold uppercase tracking-[0.25em] text-xs font-semibold mb-2 block"><i class="fas fa-glasses mr-1"></i> Setor</span>
+                <h3 class="text-4xl font-serif text-midnight mb-2">Óculos</h3>
+                <div class="w-16 h-px bg-gold mx-auto"></div>
+            </div>
+            <div id="grid-oculos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            </div>
+        </div>
+
+        <!-- Setor: Bonés -->
+        <div id="section-bones" class="mb-10 product-section scroll-mt-32">
+            <div class="text-center mb-10">
+                <span class="text-gold uppercase tracking-[0.25em] text-xs font-semibold mb-2 block"><i class="fas fa-hat-cowboy mr-1"></i> Setor</span>
+                <h3 class="text-4xl font-serif text-midnight mb-2">Bonés</h3>
+                <div class="w-16 h-px bg-gold mx-auto"></div>
+            </div>
+            <div id="grid-bones" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             </div>
         </div>
     </main>
@@ -168,17 +232,14 @@
             </div>
 
             <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white overflow-y-auto">
-                <span id="modal-brand" class="text-gold uppercase tracking-widest text-xs font-semibold mb-2"></span>
+                <span id="modal-sector-badge" class="text-gold uppercase tracking-widest text-xs font-semibold mb-2"></span>
                 <h2 id="modal-name" class="text-3xl md:text-4xl font-serif text-midnight mb-4 leading-tight"></h2>
                 <div class="w-12 h-px bg-gold mb-4"></div>
                 <p id="modal-price" class="text-3xl text-gray-800 font-light mb-6"></p>
                 
-                <p class="text-sm text-gray-500 mb-8 leading-relaxed italic">
-                    "Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."
-                </p>
+                <p id="modal-description" class="text-sm text-gray-500 mb-8 leading-relaxed italic"></p>
 
-                <div id="modal-action-btn" class="mt-auto">
-                    </div>
+                <div id="modal-action-btn" class="mt-auto"></div>
             </div>
         </div>
     </div>
@@ -202,6 +263,22 @@
         let products = [];
         let cart = [];
 
+        // Maps brand value → { section id, display label, modal description }
+        const SECTORS = {
+            arabes:  { id: 'arabes',  label: 'Árabes',           desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
+            arábes:  { id: 'arabes',  label: 'Árabes',           desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
+            boticario:{ id: 'arabes', label: 'Árabes',           desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
+            brand:   { id: 'brand',   label: 'Brand (Coleção)',   desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
+            oculos:  { id: 'oculos',  label: 'Óculos',            desc: '"Estilo que completa o look. Peça selecionada com cuidado para quem valoriza elegância no detalhe."' },
+            óculos:  { id: 'oculos',  label: 'Óculos',            desc: '"Estilo que completa o look. Peça selecionada com cuidado para quem valoriza elegância no detalhe."' },
+            bones:   { id: 'bones',   label: 'Bonés',             desc: '"Atitude e estilo em um só acessório. Para quem leva o visual a sério em qualquer ocasião."' },
+            bonés:   { id: 'bones',   label: 'Bonés',             desc: '"Atitude e estilo em um só acessório. Para quem leva o visual a sério em qualquer ocasião."' },
+        };
+
+        function getSector(brand) {
+            return SECTORS[(brand || '').toLowerCase()] || { id: 'brand', label: brand || 'Brand', desc: '"Produto selecionado com cuidado para você."' };
+        }
+
         onSnapshot(collection(db, "produtos"), (snapshot) => {
             products = [];
             snapshot.forEach((doc) => {
@@ -212,20 +289,37 @@
             window.updateCart(); 
         });
 
+        // Sector pill config (order = display order)
+        const SECTOR_PILLS = [
+            { id: 'arabes', label: 'Árabes', icon: 'fa-wind' },
+            { id: 'brand',  label: 'Brand',  icon: 'fa-star' },
+            { id: 'oculos', label: 'Óculos', icon: 'fa-glasses' },
+            { id: 'bones',  label: 'Bonés',  icon: 'fa-hat-cowboy' },
+        ];
+
         window.renderProducts = function(productsToRender = products) {
-            const gridArabes = document.getElementById('grid-arabes');
-            const gridBrand = document.getElementById('grid-brand');
+            const grids = {
+                arabes: document.getElementById('grid-arabes'),
+                brand:  document.getElementById('grid-brand'),
+                oculos: document.getElementById('grid-oculos'),
+                bones:  document.getElementById('grid-bones'),
+            };
+            const sections = {
+                arabes: document.getElementById('section-arabes'),
+                brand:  document.getElementById('section-brand'),
+                oculos: document.getElementById('section-oculos'),
+                bones:  document.getElementById('section-bones'),
+            };
             const noResults = document.getElementById('no-results');
-            const sectionArabes = document.getElementById('section-arabes');
-            const sectionBrand = document.getElementById('section-brand');
-            
-            gridArabes.innerHTML = ''; gridBrand.innerHTML = '';
-            
-            let countArabes = 0;
-            let countBrand = 0;
+
+            // Clear all grids
+            Object.values(grids).forEach(g => g.innerHTML = '');
+            const counts = { arabes: 0, brand: 0, oculos: 0, bones: 0 };
 
             productsToRender.forEach(p => {
                 const isEsgotado = p.stock <= 0;
+                const sector = getSector(p.brand);
+                const sectorId = sector.id;
                 
                 const imageHtml = p.image && p.image !== "" 
                     ? `<img src="${p.image}" alt="${p.name}" class="product-image transform group-hover:scale-105 transition-transform duration-700">`
@@ -251,21 +345,32 @@
                         </div>
                     </div>
                 `;
-                
-                const brandLower = (p.brand || '').toLowerCase();
-                const isArabes = (brandLower === 'arabes' || brandLower === 'arábes' || brandLower === 'boticario');
 
-                if(isArabes) {
-                    gridArabes.innerHTML += card;
-                    countArabes++;
-                } else {
-                    gridBrand.innerHTML += card;
-                    countBrand++;
+                if (grids[sectorId]) {
+                    grids[sectorId].innerHTML += card;
+                    counts[sectorId]++;
                 }
             });
 
-            sectionArabes.classList.toggle('hidden', countArabes === 0);
-            sectionBrand.classList.toggle('hidden', countBrand === 0);
+            // Show/hide sections based on count
+            Object.keys(sections).forEach(key => {
+                sections[key].classList.toggle('hidden', counts[key] === 0);
+            });
+
+            // Rebuild sector nav pills — only show sectors that have products
+            const navWrapper = document.getElementById('sector-nav-wrapper');
+            const nav = document.getElementById('sector-nav');
+            nav.innerHTML = '';
+            const activePills = SECTOR_PILLS.filter(s => counts[s.id] > 0);
+            if (activePills.length > 0) {
+                navWrapper.classList.remove('hidden');
+                activePills.forEach(s => {
+                    nav.innerHTML += `<a href="#section-${s.id}" class="sector-pill"><i class="fas ${s.icon}"></i> ${s.label}</a>`;
+                });
+            } else {
+                navWrapper.classList.add('hidden');
+            }
+
             noResults.classList.toggle('hidden', productsToRender.length > 0);
         }
 
@@ -275,13 +380,12 @@
 
             const modal = document.getElementById('product-modal');
             const modalContent = document.getElementById('product-modal-content');
-            
-            const brandLower = (p.brand || '').toLowerCase();
-            const brandName = (brandLower === 'arabes' || brandLower === 'arábes' || brandLower === 'boticario') ? 'Árabes' : 'Brand';
+            const sector = getSector(p.brand);
             
             document.getElementById('modal-name').innerText = p.name;
-            document.getElementById('modal-brand').innerText = `Linha ${brandName}`;
+            document.getElementById('modal-sector-badge').innerText = `Linha ${sector.label}`;
             document.getElementById('modal-price').innerText = `R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}`;
+            document.getElementById('modal-description').innerText = sector.desc.replace(/"/g, '');
             
             const imgEl = document.getElementById('modal-img');
             if (p.image && p.image !== "") {
@@ -326,6 +430,7 @@
             const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
             const heroSection = document.getElementById('hero-section');
             const searchCount = document.getElementById('search-count');
+            const navWrapper = document.getElementById('sector-nav-wrapper');
             
             if (searchTerm === "") {
                 heroSection.classList.remove('hidden');
@@ -333,21 +438,24 @@
                 window.renderProducts(products);
                 return;
             }
+            
+            // Hide sector nav while searching
+            navWrapper.classList.add('hidden');
 
             const filteredProducts = products.filter(p => 
                 p.name.toLowerCase().includes(searchTerm) || 
-                p.brand.toLowerCase().includes(searchTerm)
+                (p.brand || '').toLowerCase().includes(searchTerm)
             );
             
             heroSection.classList.add('hidden');
             searchCount.classList.remove('hidden');
             
             if (filteredProducts.length === 0) {
-                searchCount.innerHTML = `Nenhum perfume encontrado para "<b>${searchTerm}</b>"`;
+                searchCount.innerHTML = `Nenhum produto encontrado para "<b>${searchTerm}</b>"`;
             } else if (filteredProducts.length === 1) {
-                searchCount.innerHTML = `1 perfume encontrado`;
+                searchCount.innerHTML = `1 produto encontrado`;
             } else {
-                searchCount.innerHTML = `${filteredProducts.length} perfumes encontrados`;
+                searchCount.innerHTML = `${filteredProducts.length} produtos encontrados`;
             }
 
             window.renderProducts(filteredProducts);
@@ -433,12 +541,14 @@
                         ? `<img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain p-1 border rounded-sm">`
                         : `<div class="w-16 h-16 bg-gray-100 rounded-sm flex items-center justify-center text-[8px] text-gray-400 font-serif uppercase text-center p-1 border">sem<br>imagem</div>`;
 
+                    const sector = getSector(item.brand);
+
                     container.innerHTML += `
                         <div class="flex gap-4 items-center border-b border-gray-100 pb-4">
                             ${imgInCart}
                             <div class="flex-1">
                                 <p class="font-serif text-sm text-midnight">${item.name}</p>
-                                <p class="text-xs text-gray-500 mt-1">Qtd: ${item.qtd}</p>
+                                <p class="text-xs text-gray-500 mt-1">${sector.label} · Qtd: ${item.qtd}</p>
                                 <p class="text-sm font-semibold text-gold mt-1">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
                             </div>
                             <button onclick="window.removeFromCart(${index})" class="text-gray-300 hover:text-red-500 transition-colors p-2"><i class="fas fa-trash"></i></button>
@@ -458,10 +568,8 @@
             let total = 0;
             
             cart.forEach(item => {
-                const brandLower = (item.brand || '').toLowerCase();
-                const brandName = (brandLower === 'arabes' || brandLower === 'arábes' || brandLower === 'boticario') ? 'Árabes' : 'Brand';
-
-                text += `- ${item.qtd}x ${item.name} (${brandName}) | R$ ${(item.price * item.qtd).toFixed(2).replace('.', ',')}%0A`;
+                const sector = getSector(item.brand);
+                text += `- ${item.qtd}x ${item.name} (${sector.label}) | R$ ${(item.price * item.qtd).toFixed(2).replace('.', ',')}%0A`;
                 total += item.price * item.qtd;
             });
             
@@ -473,3 +581,4 @@
     </script>
 </body>
 </html>
+                   
