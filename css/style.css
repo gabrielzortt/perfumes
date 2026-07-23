@@ -1,0 +1,42 @@
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; 
+            padding: 1rem; 
+        }
+
+        /* Sector nav scrollbar hidden on mobile */
+        #sector-nav::-webkit-scrollbar { display: none; }
+        #sector-nav { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .sector-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+            padding: 0.45rem 1.1rem;
+            border-radius: 9999px;
+            border: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #4b5563;
+            background: #fff;
+            transition: all 0.25s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .sector-pill:hover, .sector-pill.active {
+            background: #0A0A0A;
+            color: #D4AF37;
+            border-color: #0A0A0A;
+        }
+        .sector-pill i {
+            font-size: 0.8rem;
+        }
