@@ -20,6 +20,7 @@
 
         // Sector map for display
         const SECTOR_LABELS = {
+            destaque:  'Destaques',
             arabes:    'Árabes',
             arábes:    'Árabes',
             boticario: 'Árabes',
@@ -90,6 +91,7 @@
 
             // Sector badge colors
             const SECTOR_COLORS = {
+                destaque:'bg-yellow-100 text-yellow-800',
                 arabes:  'bg-amber-100 text-amber-800',
                 brand:   'bg-purple-100 text-purple-800',
                 oculos:  'bg-sky-100 text-sky-800',

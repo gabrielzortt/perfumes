@@ -59,6 +59,7 @@
                         <div class="flex flex-col">
                             <label class="text-sm font-bold text-gray-600 mb-1">Marca/Setor</label>
                             <select id="prod-brand" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none bg-white">
+                                <option value="destaque">👑 Destaque</option>
                                 <option value="arabes">🌙 Árabes</option>
                                 <option value="brand">⭐ Brand (Coleção)</option>
                                 <option value="oculos">🕶️ Óculos</option>
@@ -99,6 +100,7 @@
                             <!-- Filter by sector pills -->
                             <div id="filter-pills" class="flex flex-wrap gap-1.5">
                                 <button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill active text-xs px-3 py-1.5 rounded-full border border-midnight bg-midnight text-white transition">Todos</button>
+                                <button onclick="window.setFilter('destaque')" data-filter="destaque" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Destaques</button>
                                 <button onclick="window.setFilter('arabes')" data-filter="arabes" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Árabes</button>
                                 <button onclick="window.setFilter('brand')" data-filter="brand" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Brand</button>
                                 <button onclick="window.setFilter('oculos')" data-filter="oculos" class="filter-pill text-xs px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white transition">Óculos</button>

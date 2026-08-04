@@ -18,6 +18,7 @@
 
         // Maps brand value → { section id, display label, modal description }
         const SECTORS = {
+            destaque:{ id: 'destaque', label: 'Destaques',       desc: '"Seleção especial dos produtos favoritos da casa. O melhor da nossa curadoria, reunido para você."' },
             arabes:  { id: 'arabes',  label: 'Árabes',           desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
             arábes:  { id: 'arabes',  label: 'Árabes',           desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
             boticario:{ id: 'arabes', label: 'Árabes',           desc: '"Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá."' },
@@ -44,6 +45,7 @@
 
         // Sector pill config (order = display order)
         const SECTOR_PILLS = [
+            { id: 'destaque', label: 'Destaques', icon: 'fa-crown' },
             { id: 'arabes', label: 'Árabes', icon: 'fa-wind' },
             { id: 'brand',  label: 'Brand',  icon: 'fa-star' },
             { id: 'oculos', label: 'Óculos', icon: 'fa-glasses' },
@@ -52,12 +54,14 @@
 
         window.renderProducts = function(productsToRender = products) {
             const grids = {
+                destaque: document.getElementById('grid-destaque'),
                 arabes: document.getElementById('grid-arabes'),
                 brand:  document.getElementById('grid-brand'),
                 oculos: document.getElementById('grid-oculos'),
                 bones:  document.getElementById('grid-bones'),
             };
             const sections = {
+                destaque: document.getElementById('section-destaque'),
                 arabes: document.getElementById('section-arabes'),
                 brand:  document.getElementById('section-brand'),
                 oculos: document.getElementById('section-oculos'),
@@ -67,7 +71,7 @@
 
             // Clear all grids
             Object.values(grids).forEach(g => g.innerHTML = '');
-            const counts = { arabes: 0, brand: 0, oculos: 0, bones: 0 };
+            const counts = { destaque: 0, arabes: 0, brand: 0, oculos: 0, bones: 0 };
 
             productsToRender.forEach(p => {
                 const isEsgotado = p.stock <= 0;
