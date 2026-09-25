@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import { normalizeBrandKey, resolveSectors } from "./sectors.js";
-import { FRAGRANCE_LIBRARY, extractReference } from "./fragrance-library.js";
+import { FRAGRANCE_LIBRARY, extractReference, extractReferenceDisplay } from "./fragrance-library.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBBzLjq-FsBI7nK97MvF_-FMNEDDakbs3o",
@@ -117,7 +117,7 @@ window.renderProducts = function(productsToRender = products) {
         section.innerHTML = `
             <div class="flex items-baseline justify-between border-b border-line pb-3 mb-8">
                 <h3 class="font-serif text-3xl md:text-4xl">${sector.label}</h3>
-                <span class="text-copper text-sm">${sector.icon || ''}</span>
+                <span class="text-terracotta text-sm">${sector.icon || ''}</span>
             </div>
             <div id="grid-${key}" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">${cardsHtml}</div>
         `;
@@ -143,27 +143,24 @@ window.renderProducts = function(productsToRender = products) {
 function renderCard(p) {
     const isEsgotado = p.stock <= 0;
     const imageHtml = p.image && p.image !== ""
-        ? `<img src="${p.image}" alt="${p.name}" class="product-image transform group-hover:scale-105 transition-transform duration-700">`
-        : `<span class="text-gray-400 font-serif tracking-widest text-xs uppercase transform group-hover:scale-110 transition-transform duration-700 p-4 text-center">sem imagem</span>`;
+        ? `<img src="${p.image}" alt="${p.name}" class="product-image">`
+        : `<span class="text-muted font-serif tracking-widest text-xs uppercase p-4 text-center">sem imagem</span>`;
+
+    const quickAdd = isEsgotado
+        ? `<div class="quick-add always bg-sand/95 text-ink/40 eyebrow text-center py-3">Esgotado</div>`
+        : `<button onclick="event.stopPropagation(); window.addToCart('${p.id}', this)" class="quick-add w-full bg-ink/95 text-cream eyebrow text-center py-3 hover:bg-terracotta transition-colors">Adicionar à sacola</button>`;
 
     return `
-        <div class="group product-card overflow-hidden relative flex flex-col">
-            <div onclick="window.openProductModal('${p.id}')" class="card-media h-44 md:h-60 flex items-center justify-center overflow-hidden relative border-b border-line cursor-pointer">
+        <article class="group relative">
+            <div onclick="window.openProductModal('${p.id}')" class="relative aspect-square bg-sand/40 overflow-hidden hover-zoom-img cursor-pointer">
                 ${imageHtml}
-                ${isEsgotado ? '<div class="absolute top-3 right-3 bg-ink text-ivory text-[10px] px-2.5 py-1 rounded-full z-10">Esgotado</div>' : ''}
+                ${quickAdd}
             </div>
-            
-            <div class="p-4 md:p-5 flex flex-col flex-1 bg-ivory relative z-10">
-                <h4 onclick="window.openProductModal('${p.id}')" class="underline-grow inline-block text-sm md:text-base font-serif mb-1 line-clamp-2 h-10 md:h-12 cursor-pointer w-fit">${p.name}</h4>
-                <p class="text-lg md:text-xl font-light mb-4 md:mb-5">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</p>
-                
-                <div class="mt-auto">
-                    ${isEsgotado
-                        ? '<button disabled class="w-full border border-line text-ink/30 py-2.5 text-xs cursor-not-allowed">Indisponível</button>'
-                        : `<button onclick="window.addToCart('${p.id}', this)" class="w-full bg-ivory border border-ink text-ink py-2.5 text-xs hover:bg-ink hover:text-ivory transition-all duration-300">Adicionar à Sacola</button>`}
-                </div>
+            <div onclick="window.openProductModal('${p.id}')" class="mt-3 flex items-start justify-between gap-3 cursor-pointer">
+                <h4 class="link-underline-reveal font-serif text-base md:text-lg leading-tight line-clamp-2">${p.name}</h4>
+                <span class="text-sm shrink-0 pt-0.5">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</span>
             </div>
-        </div>
+        </article>
     `;
 }
 
@@ -179,9 +176,18 @@ window.openProductModal = function(id) {
     const frag = getFragranceInfo(p);
 
     document.getElementById('modal-name').innerText = p.name;
-    document.getElementById('modal-sector-badge').innerText = `Linha ${sector.label}`;
+    document.getElementById('modal-sector-badge').innerText = sector.label;
     document.getElementById('modal-price').innerText = `R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}`;
     document.getElementById('modal-description').innerText = (frag && frag.blurb) ? frag.blurb : GENERIC_DESC;
+
+    const inspiredEl = document.getElementById('modal-inspired');
+    const displayRef = extractReferenceDisplay(p.name);
+    if (displayRef) {
+        inspiredEl.innerText = `Interpretação inspirada em ${displayRef} — não é o perfume original da marca.`;
+        inspiredEl.classList.remove('hidden');
+    } else {
+        inspiredEl.classList.add('hidden');
+    }
 
     // Família + pirâmide olfativa (só aparece quando há dados)
     const familyEl = document.getElementById('modal-family');
@@ -198,7 +204,7 @@ window.openProductModal = function(id) {
 
         notesEl.innerHTML = rows.map(([label, v]) => `
             <div class="flex gap-3 text-xs text-ink/70 py-1.5 border-t border-line first:border-t-0">
-                <span class="w-16 shrink-0 uppercase tracking-wide text-copper font-medium">${label}</span>
+                <span class="w-16 shrink-0 uppercase tracking-wide text-terracotta font-medium">${label}</span>
                 <span>${v}</span>
             </div>
         `).join('');
@@ -223,7 +229,7 @@ window.openProductModal = function(id) {
     if (isEsgotado) {
         btnContainer.innerHTML = '<button disabled class="w-full bg-sand text-ink/30 py-4 text-sm cursor-not-allowed">Produto Esgotado</button>';
     } else {
-        btnContainer.innerHTML = `<button onclick="window.addToCart('${p.id}', this); setTimeout(window.closeProductModal, 1000);" class="w-full bg-ink text-ivory py-4 text-sm hover:bg-copper transition-colors duration-500">Adicionar à Sacola</button>`;
+        btnContainer.innerHTML = `<button onclick="window.addToCart('${p.id}', this); setTimeout(window.closeProductModal, 1000);" class="w-full bg-ink text-cream py-4 text-sm hover:bg-terracotta transition-colors duration-500">Adicionar à Sacola</button>`;
     }
 
     modal.classList.remove('hidden');
@@ -322,12 +328,10 @@ window.addToCart = function(id, btnElement) {
         if (btnElement) {
             const originalText = btnElement.innerText;
             btnElement.innerText = "Adicionado ✓";
-            btnElement.classList.add('bg-copper', 'text-ivory', 'border-copper');
-            btnElement.classList.remove('bg-ivory', 'text-ink', 'border-ink');
+            btnElement.classList.add('bg-terracotta');
             setTimeout(() => {
                 btnElement.innerText = originalText;
-                btnElement.classList.remove('bg-copper', 'text-ivory', 'border-copper');
-                btnElement.classList.add('bg-ivory', 'text-ink', 'border-ink');
+                btnElement.classList.remove('bg-terracotta');
             }, 1500);
         }
 
@@ -369,7 +373,7 @@ window.updateCart = function() {
                     <div class="flex-1">
                         <p class="font-serif text-sm">${item.name}</p>
                         <p class="text-xs text-ink/50 mt-1">${sector.label} · Qtd: ${item.qtd}</p>
-                        <p class="text-sm font-semibold text-copper mt-1">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+                        <p class="text-sm font-semibold text-terracotta mt-1">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
                     </div>
                     <button onclick="window.removeFromCart(${index})" class="text-ink/30 hover:text-red-500 transition-colors p-2"><i class="fas fa-trash"></i></button>
                 </div>

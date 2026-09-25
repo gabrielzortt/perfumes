@@ -30,6 +30,18 @@ export function extractReference(productName) {
     return normalize(ref);
 }
 
+// Igual a extractReference, mas preservando maiúsculas/minúsculas — usado só
+// para exibir "Inspirado em X" de forma transparente pro cliente.
+export function extractReferenceDisplay(productName) {
+    const m = (productName || '').match(/inspira[cç][aã]o\s+(.+)/i);
+    if (!m) return '';
+    let ref = m[1];
+    ref = ref.replace(/\(.*?\)/g, ' ');
+    ref = ref.replace(/["']/g, '');
+    ref = ref.replace(/[-–]?\s*\d+\s*ml.*$/i, '');
+    return ref.trim();
+}
+
 export const FRAGRANCE_LIBRARY = {
     'acqua di gio giorgio armani': { family: 'Aquático Amadeirado', top: 'Bergamota, limão, notas marinhas', heart: 'Jasmim, alecrim, sálvia-esclareia', base: 'Almíscar branco, cedro, patchouli', blurb: 'A brisa mediterrânea engarrafada — o clássico aquático que definiu o gênero para os homens.' },
     'irresistible givenchy': { family: 'Floral Frutado', top: 'Pera, bergamota', heart: 'Rosa, peônia', base: 'Almíscar, madeiras', blurb: 'Rosa moderna com um fundo cremoso e sedutor, pensada para o dia a dia com presença.' },

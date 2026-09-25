@@ -66,7 +66,7 @@ window.renderSectorChips = function() {
             <span>${s.icon || '📦'}</span>
             <span>${s.label}</span>
             <span class="text-ink/30">#${s.order ?? 0}</span>
-            <button onclick="window.editSector('${s.key}')" class="text-ink/40 hover:text-copper ml-1" title="Editar"><i class="fas fa-pen text-[10px]"></i></button>
+            <button onclick="window.editSector('${s.key}')" class="text-ink/40 hover:text-terracotta ml-1" title="Editar"><i class="fas fa-pen text-[10px]"></i></button>
             <button onclick="window.deleteSector('${s.key}')" class="text-ink/40 hover:text-red-500" title="Excluir"><i class="fas fa-trash text-[10px]"></i></button>
         </span>
     `).join('');
@@ -129,8 +129,8 @@ window.populateBrandSelect = function() {
 window.renderFilterPills = function() {
     const wrap = document.getElementById('filter-pills');
     const sectors = getSectorList();
-    wrap.innerHTML = `<button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill ${activeFilter === 'todos' ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-ink ${activeFilter === 'todos' ? 'bg-ink text-ivory' : 'text-ink/60'} transition">Todos</button>` +
-        sectors.map(s => `<button onclick="window.setFilter('${s.key}')" data-filter="${s.key}" class="filter-pill ${activeFilter === s.key ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-line ${activeFilter === s.key ? 'bg-ink text-ivory border-ink' : 'text-ink/60 hover:border-ink'} transition">${s.icon || ''} ${s.label}</button>`).join('');
+    wrap.innerHTML = `<button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill ${activeFilter === 'todos' ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-ink ${activeFilter === 'todos' ? 'bg-ink text-cream' : 'text-ink/60'} transition">Todos</button>` +
+        sectors.map(s => `<button onclick="window.setFilter('${s.key}')" data-filter="${s.key}" class="filter-pill ${activeFilter === s.key ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-line ${activeFilter === s.key ? 'bg-ink text-cream border-ink' : 'text-ink/60 hover:border-ink'} transition">${s.icon || ''} ${s.label}</button>`).join('');
 }
 
 window.setFilter = function(filter) {
@@ -208,7 +208,7 @@ window.renderTable = function() {
 
         const hasFicha = !!(p.description || p.family || p.notesTop);
         const fichaBadge = hasFicha
-            ? `<span class="bg-copper/10 text-copper text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check"></i></span>`
+            ? `<span class="bg-terracotta/10 text-terracotta text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check"></i></span>`
             : `<span class="text-ink/20 text-xs">—</span>`;
 
         tbody.innerHTML += `
@@ -216,7 +216,7 @@ window.renderTable = function() {
                 <td class="p-4">${imgTag}</td>
                 <td class="p-4 font-semibold">${p.name}</td>
                 <td class="p-4"><span class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide bg-sand/60 text-ink/70">${sectorDisplay}</span></td>
-                <td class="p-4 font-semibold text-copper">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</td>
+                <td class="p-4 font-semibold text-terracotta">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</td>
                 <td class="p-4">${stockLabel}</td>
                 <td class="p-4">${fichaBadge}</td>
                 <td class="p-4">
@@ -305,7 +305,7 @@ window.saveProduct = async function(e) {
 window.editProduct = function(id) {
     const product = products.find(p => p.id === id);
 
-    document.getElementById('form-title').innerHTML = `<i class="fas fa-edit text-copper"></i> Editar Produto`;
+    document.getElementById('form-title').innerHTML = `<i class="fas fa-edit text-terracotta"></i> Editar Produto`;
     document.getElementById('prod-name').focus();
 
     document.getElementById('prod-id').value = product.id;
@@ -350,7 +350,7 @@ window.deleteProduct = async function(id) {
 }
 
 window.resetForm = function() {
-    document.getElementById('form-title').innerHTML = `<i class="fas fa-plus-circle text-copper"></i> Novo Produto`;
+    document.getElementById('form-title').innerHTML = `<i class="fas fa-plus-circle text-terracotta"></i> Novo Produto`;
     document.getElementById('prod-id').value = '';
     document.getElementById('product-form').reset();
     window.populateBrandSelect();

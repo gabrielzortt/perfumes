@@ -1,79 +1,60 @@
 html { scroll-behavior: smooth; }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #F7F2E8; }
-::-webkit-scrollbar-thumb { background: #A8672E; border-radius: 10px; }
+::-webkit-scrollbar-track { background: #FAF6F2; }
+::-webkit-scrollbar-thumb { background: #C17C74; border-radius: 10px; }
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
 
-/* ---------- Product image ---------- */
-.product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 1.25rem;
+/* ---------- Eyebrow label (small tracked uppercase) ---------- */
+.eyebrow {
+    font-size: .6875rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    font-weight: 500;
 }
+
+/* ---------- Underline-reveal hover (sweeps in from the left) ---------- */
+.link-underline-reveal {
+    position: relative;
+    display: inline-block;
+}
+.link-underline-reveal::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    height: 1px; width: 100%;
+    background: currentColor;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform .45s cubic-bezier(.65,0,.35,1);
+}
+.link-underline-reveal:hover::after { transform: scaleX(1); }
+
+/* ---------- Product image ---------- */
+.product-image { width: 100%; height: 100%; object-fit: contain; padding: 1.5rem; }
+
+.hover-zoom-img { overflow: hidden; }
+.hover-zoom-img img { transition: transform 1.1s cubic-bezier(.16,1,.3,1); }
+.hover-zoom-img:hover img { transform: scale(1.05); }
+
+/* ---------- Quick-add bar (slides up over the product image on hover) ---------- */
+.quick-add {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    transform: translateY(100%);
+    transition: transform .35s cubic-bezier(.65,0,.35,1);
+}
+.group:hover .quick-add,
+.quick-add.always { transform: translateY(0); }
 
 /* ---------- Sector nav ---------- */
 #sector-nav::-webkit-scrollbar { display: none; }
 #sector-nav { -ms-overflow-style: none; scrollbar-width: none; }
 
-.sector-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    white-space: nowrap;
-    padding: .5rem 1.15rem;
-    border-radius: 9999px;
-    border: 1px solid #E1D2AE;
-    font-size: .72rem;
-    font-weight: 500;
-    letter-spacing: .06em;
-    color: #4A231F;
-    background: #fff;
-    transition: background .2s ease, color .2s ease, border-color .2s ease;
-    cursor: pointer;
-    text-decoration: none;
-}
-.sector-pill:hover, .sector-pill.active {
-    background: #1C1712;
-    color: #EEE3CC;
-    border-color: #1C1712;
-}
-
-/* ---------- Product card ---------- */
-.product-card {
-    background: #fff;
-    border: 1px solid #EEE3CC;
-    transition: border-color .35s ease, transform .35s ease;
-}
-.product-card:hover { border-color: #C98A4F; }
-.product-card .card-media { background: linear-gradient(160deg, #F7F2E8 0%, #EEE3CC 100%); }
-
-.underline-grow {
-    position: relative;
-}
-.underline-grow::after {
-    content: '';
-    position: absolute;
-    left: 0; bottom: -2px;
-    height: 1px;
-    width: 0;
-    background: #A8672E;
-    transition: width .3s ease;
-}
-.underline-grow:hover::after { width: 100%; }
-
 /* ---------- Focus states (accessibility) ---------- */
 a:focus-visible, button:focus-visible, input:focus-visible {
-    outline: 2px solid #A8672E;
+    outline: 2px solid #C17C74;
     outline-offset: 2px;
-}
-
-/* ---------- Hero texture ---------- */
-.hero-grain {
-    background-image: radial-gradient(circle at 1px 1px, rgba(247,242,232,.06) 1px, transparent 0);
-    background-size: 18px 18px;
 }
