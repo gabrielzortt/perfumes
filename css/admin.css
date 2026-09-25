@@ -1,5 +1,24 @@
-        .filter-pill.active {
-            background: #0A0A0A;
-            color: #D4AF37;
-            border-color: #0A0A0A;
-        }
+.filter-pill.active {
+    background: #1C1712;
+    color: #EEE3CC;
+    border-color: #1C1712;
+}
+
+.sector-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .8rem;
+    border-radius: 9999px;
+    background: #fff;
+    border: 1px solid #E1D2AE;
+    font-size: .78rem;
+}
+
+details.olfativa > summary {
+    cursor: pointer;
+    list-style: none;
+}
+details.olfativa > summary::-webkit-details-marker { display: none; }
+details.olfativa[open] summary .chev { transform: rotate(90deg); }
+.chev { transition: transform .2s ease; display: inline-block; }
