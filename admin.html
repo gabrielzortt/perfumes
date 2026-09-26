@@ -3,66 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Perfumes da Gi</title>
+    <title>Admin Turbinado | Perfumes da Gi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <script src="js/admin-tailwind-config.js"></script>
 </head>
-<body class="bg-sand/40 p-4 md:p-8 font-sans antialiased text-ink">
+<body class="bg-gray-100 p-4 md:p-8 font-sans antialiased text-gray-800">
 
     <div class="max-w-7xl mx-auto">
-        <header class="flex justify-between items-center mb-8 pb-4 border-b-2 border-terracotta">
-            <h1 class="text-2xl md:text-3xl font-serif tracking-tight">Gestão da Loja <span class="text-terracotta italic">da Gi</span></h1>
-            <a href="index.html" target="_blank" class="text-terracotta hover:text-ink transition flex items-center gap-2 text-sm">
-                Ver Loja <i class="fas fa-external-link-alt text-xs"></i>
+        <header class="flex justify-between items-center mb-10 pb-4 border-b-2 border-gold">
+            <h1 class="text-3xl md:text-4xl font-serif font-bold text-midnight tracking-wider">Gestão de Estoque da Gi</h1>
+            <a href="index.html" target="_blank" class="text-gold hover:text-midnight transition flex items-center gap-2">
+                Ver Loja <i class="fas fa-external-link-alt text-sm"></i>
             </a>
         </header>
 
         <!-- ============ Gerenciador de Setores ============ -->
-        <div class="bg-white p-5 md:p-6 rounded-lg shadow-sm border border-line mb-8">
+        <div class="bg-white p-5 md:p-6 rounded-lg shadow-xl border border-gray-100 mb-8">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-serif flex items-center gap-2"><i class="fas fa-tags text-terracotta"></i> Setores da loja</h2>
-                <span class="text-xs text-ink/40">Aparecem na loja na ordem abaixo — arraste não é suportado, use os números</span>
+                <h2 class="text-lg font-serif text-midnight flex items-center gap-2"><i class="fas fa-tags text-gold"></i> Setores da loja</h2>
+                <span class="text-xs text-gray-400">Aparecem na loja na ordem definida abaixo</span>
             </div>
             <div id="sector-chips" class="flex flex-wrap gap-2 mb-4"></div>
 
-            <form id="sector-form" onsubmit="window.saveSector(event)" class="flex flex-wrap items-end gap-3 border-t border-line pt-4">
+            <form id="sector-form" onsubmit="window.saveSector(event)" class="flex flex-wrap items-end gap-3 border-t pt-4">
                 <input type="hidden" id="sector-id">
                 <div class="flex flex-col">
-                    <label class="text-xs font-semibold text-ink/60 mb-1">Emoji / ícone</label>
-                    <input type="text" id="sector-icon" placeholder="🌸" maxlength="4" class="w-20 border border-line p-2 rounded text-center focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
+                    <label class="text-xs font-bold text-gray-500 mb-1">Emoji</label>
+                    <input type="text" id="sector-icon" placeholder="🌸" maxlength="4" class="w-20 border border-gray-200 p-2 rounded text-center focus:ring-1 focus:ring-gold focus:border-gold outline-none">
                 </div>
                 <div class="flex flex-col flex-1 min-w-[160px]">
-                    <label class="text-xs font-semibold text-ink/60 mb-1">Nome do setor</label>
-                    <input type="text" id="sector-label" placeholder="Ex: Edições Limitadas" required class="w-full border border-line p-2 rounded focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
+                    <label class="text-xs font-bold text-gray-500 mb-1">Nome do setor</label>
+                    <input type="text" id="sector-label" placeholder="Ex: Edições Limitadas" required class="w-full border border-gray-200 p-2 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none">
                 </div>
                 <div class="flex flex-col">
-                    <label class="text-xs font-semibold text-ink/60 mb-1">Ordem</label>
-                    <input type="number" id="sector-order" placeholder="0" class="w-20 border border-line p-2 rounded focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
+                    <label class="text-xs font-bold text-gray-500 mb-1">Ordem</label>
+                    <input type="number" id="sector-order" placeholder="0" class="w-20 border border-gray-200 p-2 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none">
                 </div>
-                <button type="submit" id="sector-submit-btn" class="bg-ink text-cream px-4 py-2 rounded text-sm hover:bg-terracotta transition">+ Salvar setor</button>
-                <button type="button" onclick="window.resetSectorForm()" class="text-xs text-ink/50 hover:text-ink px-2">cancelar edição</button>
+                <button type="submit" id="sector-submit-btn" class="bg-midnight text-white px-4 py-2 rounded text-sm hover:bg-gold transition">+ Salvar setor</button>
+                <button type="button" onclick="window.resetSectorForm()" class="text-xs text-gray-400 hover:text-midnight px-2">cancelar edição</button>
             </form>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1">
-                <div class="bg-white p-6 rounded-lg shadow-sm sticky top-8 border border-line">
-                    <h2 id="form-title" class="text-xl font-serif mb-6 border-b border-line pb-3 flex items-center gap-2">
-                        <i class="fas fa-plus-circle text-terracotta"></i> Novo Produto
+                <div class="bg-white p-6 rounded-lg shadow-xl sticky top-8 border border-gray-100">
+                    <h2 id="form-title" class="text-2xl font-serif mb-6 text-midnight border-b pb-2 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-gold"></i> Novo Produto
                     </h2>
-
+                    
                     <form id="product-form" class="space-y-5" onsubmit="window.saveProduct(event)">
                         <input type="hidden" id="prod-id">
-
-                        <div class="flex flex-col items-center gap-3 p-4 bg-sand/30 border border-line rounded-lg">
-                            <label class="block text-sm font-semibold text-ink/70 self-start">Imagem do Produto</label>
-
-                            <div class="w-40 h-40 bg-white border border-line rounded flex items-center justify-center overflow-hidden relative shadow-inner">
+                        
+                        <div class="flex flex-col items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                            <label class="block text-sm font-bold text-gray-600 self-start">Imagem do Produto</label>
+                            
+                            <div class="w-40 h-40 bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden relative shadow-inner">
                                 <img id="img-preview" src="" alt="Previsualização" class="hidden w-full h-full object-contain p-1">
-                                <div id="img-placeholder" class="text-center text-ink/30 p-2 text-xs font-light">
+                                <div id="img-placeholder" class="text-center text-gray-400 p-2 text-xs font-light">
                                     <i class="fas fa-image text-3xl mb-2 block"></i>
                                     A foto aparecerá aqui
                                 </div>
@@ -71,72 +71,70 @@
                                 </button>
                             </div>
 
-                            <label class="cursor-pointer bg-white border border-line text-ink py-2 px-4 rounded text-xs hover:border-terracotta hover:text-terracotta transition shadow-sm">
+                            <label class="cursor-pointer bg-white border border-gray-300 text-midnight py-2 px-4 rounded text-xs hover:border-gold hover:text-gold transition shadow-sm">
                                 <span><i class="fas fa-upload mr-1"></i> Escolher Foto</span>
                                 <input type="file" id="prod-image" accept="image/png, image/jpeg, image/webp" class="hidden" onchange="window.previewFile()">
                             </label>
-                            <p class="text-[10px] text-ink/40 text-center">Processamento via Cloudinary (Anti-Bloqueio).</p>
+                            <p class="text-[10px] text-gray-400 text-center">Processamento via Cloudinary (Anti-Bloqueio).</p>
                         </div>
 
                         <div class="flex flex-col">
-                            <label class="text-sm font-semibold text-ink/70 mb-1">Nome do Produto</label>
-                            <input type="text" id="prod-name" placeholder="Ex: Brand Collection 100 - Inspiração Sauvage Dior - 25ml" class="border border-line p-3 rounded focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none" required>
+                            <label class="text-sm font-bold text-gray-600 mb-1">Nome do Produto</label>
+                            <input type="text" id="prod-name" placeholder="Ex: Floratta Simple Love" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none" required>
                         </div>
-
+                        
                         <div class="flex flex-col">
-                            <label class="text-sm font-semibold text-ink/70 mb-1">Setor</label>
-                            <select id="prod-brand" class="border border-line p-3 rounded focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none bg-white">
+                            <label class="text-sm font-bold text-gray-600 mb-1">Marca/Setor</label>
+                            <select id="prod-brand" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none bg-white">
                             </select>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
                             <div class="flex flex-col">
-                                <label class="text-sm font-semibold text-ink/70 mb-1">Preço (R$)</label>
-                                <input type="number" id="prod-price" step="0.01" placeholder="99.90" class="border border-line p-3 rounded focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none" required>
+                                <label class="text-sm font-bold text-gray-600 mb-1">Preço (R$)</label>
+                                <input type="number" id="prod-price" step="0.01" placeholder="99.90" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none" required>
                             </div>
                             <div class="flex flex-col">
-                                <label class="text-sm font-semibold text-ink/70 mb-1">Estoque (Qtd)</label>
-                                <input type="number" id="prod-stock" placeholder="0" class="border border-line p-3 rounded focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none" required>
+                                <label class="text-sm font-bold text-gray-600 mb-1">Estoque (Qtd)</label>
+                                <input type="number" id="prod-stock" placeholder="0" class="border border-gray-200 p-3 rounded focus:ring-1 focus:ring-gold focus:border-gold outline-none" required>
                             </div>
                         </div>
 
-                        <details class="olfativa border border-line rounded-lg">
-                            <summary class="flex items-center justify-between p-3 text-sm font-semibold text-ink/70">
-                                <span><i class="fas fa-spray-can-sparkles text-terracotta mr-1.5"></i> Ficha olfativa (opcional)</span>
-                                <i class="fas fa-chevron-right chev text-xs text-ink/40"></i>
+                        <details class="olfativa border border-gray-200 rounded-lg">
+                            <summary class="flex items-center justify-between p-3 text-sm font-bold text-gray-600">
+                                <span><i class="fas fa-spray-can-sparkles text-gold mr-1.5"></i> Ficha olfativa (opcional)</span>
+                                <i class="fas fa-chevron-right chev text-xs text-gray-400"></i>
                             </summary>
-                            <div class="p-4 pt-0 space-y-3 border-t border-line">
-                                <p class="text-xs text-ink/50 -mt-1">Se deixar em branco, a loja usa automaticamente a ficha pesquisada da biblioteca interna (quando o nome bate com um perfume conhecido) ou o texto genérico do setor.</p>
+                            <div class="p-4 pt-0 space-y-3 border-t border-gray-100">
+                                <p class="text-xs text-gray-400 -mt-1">Em branco, a loja usa a ficha pesquisada da biblioteca interna (se o nome bater com um perfume conhecido) ou o texto padrão do setor.</p>
                                 <div class="flex flex-col">
-                                    <label class="text-xs font-semibold text-ink/60 mb-1">Família olfativa</label>
-                                    <input type="text" id="prod-family" placeholder="Ex: Amadeirado Aromático" class="border border-line p-2.5 rounded text-sm focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
-                                </div>
-                                <div class="grid grid-cols-1 gap-3">
-                                    <div class="flex flex-col">
-                                        <label class="text-xs font-semibold text-ink/60 mb-1">Notas de topo</label>
-                                        <input type="text" id="prod-notes-top" placeholder="Ex: Bergamota, pimenta-rosa" class="border border-line p-2.5 rounded text-sm focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label class="text-xs font-semibold text-ink/60 mb-1">Notas de coração</label>
-                                        <input type="text" id="prod-notes-heart" placeholder="Ex: Lavanda, gerânio" class="border border-line p-2.5 rounded text-sm focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label class="text-xs font-semibold text-ink/60 mb-1">Notas de fundo</label>
-                                        <input type="text" id="prod-notes-base" placeholder="Ex: Âmbar, baunilha, patchouli" class="border border-line p-2.5 rounded text-sm focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none">
-                                    </div>
+                                    <label class="text-xs font-bold text-gray-500 mb-1">Família olfativa</label>
+                                    <input type="text" id="prod-family" placeholder="Ex: Amadeirado Aromático" class="border border-gray-200 p-2.5 rounded text-sm focus:ring-1 focus:ring-gold focus:border-gold outline-none">
                                 </div>
                                 <div class="flex flex-col">
-                                    <label class="text-xs font-semibold text-ink/60 mb-1">Descrição autoral (aparece no modal)</label>
-                                    <textarea id="prod-description" rows="2" placeholder="Ex: A brisa mediterrânea engarrafada — fresco, marinho, inconfundível." class="border border-line p-2.5 rounded text-sm focus:ring-1 focus:ring-terracotta focus:border-terracotta outline-none resize-none"></textarea>
+                                    <label class="text-xs font-bold text-gray-500 mb-1">Notas de topo</label>
+                                    <input type="text" id="prod-notes-top" placeholder="Ex: Bergamota, pimenta-rosa" class="border border-gray-200 p-2.5 rounded text-sm focus:ring-1 focus:ring-gold focus:border-gold outline-none">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label class="text-xs font-bold text-gray-500 mb-1">Notas de coração</label>
+                                    <input type="text" id="prod-notes-heart" placeholder="Ex: Lavanda, gerânio" class="border border-gray-200 p-2.5 rounded text-sm focus:ring-1 focus:ring-gold focus:border-gold outline-none">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label class="text-xs font-bold text-gray-500 mb-1">Notas de fundo</label>
+                                    <input type="text" id="prod-notes-base" placeholder="Ex: Âmbar, baunilha, patchouli" class="border border-gray-200 p-2.5 rounded text-sm focus:ring-1 focus:ring-gold focus:border-gold outline-none">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label class="text-xs font-bold text-gray-500 mb-1">Descrição autoral (aparece no modal)</label>
+                                    <textarea id="prod-description" rows="2" placeholder="Ex: A brisa mediterrânea engarrafada — fresco, marinho, inconfundível." class="border border-gray-200 p-2.5 rounded text-sm focus:ring-1 focus:ring-gold focus:border-gold outline-none resize-none"></textarea>
                                 </div>
                             </div>
                         </details>
 
-                        <div class="flex flex-col md:flex-row gap-3 pt-4 border-t border-line mt-6">
-                            <button type="button" onclick="window.resetForm()" class="flex-1 px-5 py-3 border border-line rounded hover:bg-sand/40 transition text-sm text-ink/60 font-semibold">
+                        <div class="flex flex-col md:flex-row gap-3 pt-4 border-t mt-6">
+                            <button type="button" onclick="window.resetForm()" class="flex-1 px-5 py-3 border border-gray-300 rounded hover:bg-gray-100 transition text-sm text-gray-600 uppercase tracking-wider font-semibold">
                                 Limpar / Novo
                             </button>
-                            <button type="submit" id="btn-save" class="flex-1 px-5 py-3 bg-ink text-cream rounded hover:bg-terracotta transition text-sm font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button type="submit" id="btn-save" class="flex-1 px-5 py-3 bg-midnight text-white rounded hover:bg-gold transition text-sm uppercase tracking-wider font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                                 Salvar Produto
                             </button>
                         </div>
@@ -145,32 +143,31 @@
             </div>
 
             <div class="lg:col-span-2">
-                <div class="bg-white p-6 md:p-8 rounded-lg shadow-sm border border-line">
-                    <div class="flex flex-wrap justify-between items-center mb-6 border-b border-line pb-4 gap-4">
-                        <h2 class="text-xl font-serif flex items-center gap-2">
-                            <i class="fas fa-list text-terracotta"></i> Produtos Cadastrados
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-xl border border-gray-100">
+                    <div class="flex flex-wrap justify-between items-center mb-6 border-b pb-4 gap-4">
+                        <h2 class="text-2xl font-serif text-midnight flex items-center gap-2">
+                            <i class="fas fa-list text-gold"></i> Produtos Cadastrados
                         </h2>
                         <div class="flex flex-wrap gap-2 items-center">
-                            <button onclick="window.autoFillNotes()" id="btn-autofill" class="text-xs px-3 py-2 rounded-full border border-terracotta text-terracotta hover:bg-terracotta hover:text-cream transition flex items-center gap-1.5" title="Preenche a ficha olfativa dos produtos que ainda não têm, usando a biblioteca interna pesquisada">
-                                <i class="fas fa-wand-magic-sparkles"></i> Preencher fichas automaticamente
+                            <button onclick="window.autoFillNotes()" id="btn-autofill" class="text-xs px-3 py-2 rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition flex items-center gap-1.5" title="Preenche a ficha olfativa dos produtos que ainda não têm, usando a biblioteca interna pesquisada">
+                                <i class="fas fa-wand-magic-sparkles"></i> Preencher fichas
                             </button>
+                            <div class="relative w-full md:w-48">
+                                <input type="text" id="admin-search" onkeyup="window.renderTable()" placeholder="Filtrar tabela..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-2 pl-4 pr-10 text-xs focus:border-gold focus:ring-1 focus:ring-gold outline-none">
+                                <i class="fas fa-filter absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 text-sm"></i>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
-                        <div id="filter-pills" class="flex flex-wrap gap-1.5">
-                            <button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill active text-xs px-3 py-1.5 rounded-full border border-ink bg-ink text-cream transition">Todos</button>
-                        </div>
-                        <div class="relative w-full md:w-48">
-                            <input type="text" id="admin-search" onkeyup="window.renderTable()" placeholder="Filtrar tabela..." class="w-full bg-sand/30 border border-line rounded-full py-2 pl-4 pr-10 text-xs focus:border-terracotta focus:ring-1 focus:ring-terracotta outline-none">
-                            <i class="fas fa-filter absolute right-3 top-1/2 -translate-y-1/2 text-ink/30 text-sm"></i>
-                        </div>
+                    <!-- Filter by sector pills -->
+                    <div id="filter-pills" class="flex flex-wrap gap-1.5 mb-6">
+                        <button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill active text-xs px-3 py-1.5 rounded-full border border-midnight bg-midnight text-white transition">Todos</button>
                     </div>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-ink text-cream uppercase text-[11px] tracking-wider font-semibold">
+                                <tr class="bg-midnight text-white uppercase text-[11px] tracking-wider font-semibold">
                                     <th class="p-4 rounded-l-sm">Foto</th>
                                     <th class="p-4">Nome</th>
                                     <th class="p-4">Setor</th>
@@ -183,7 +180,7 @@
                             <tbody id="product-list" class="text-sm">
                             </tbody>
                         </table>
-                        <div id="no-products-msg" class="hidden text-center py-16 text-ink/40 italic">
+                        <div id="no-products-msg" class="hidden text-center py-16 text-gray-500 italic">
                             Nenhum produto cadastrado.
                         </div>
                     </div>

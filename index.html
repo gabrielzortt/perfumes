@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfumes da Gi | Alta Perfumaria</title>
-    <meta name="description" content="Perfumaria inspirada nos grandes lançamentos, com ótima fixação e preço justo. Entrega rápida em Manaus. Atendimento via WhatsApp.">
+    <meta name="description" content="Perfumes importados originais com preços acessíveis. Entrega rápida em Manaus. Atendimento via WhatsApp.">
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -17,170 +17,130 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="shortcut icon" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
-
+    
     <meta property="og:title" content="Perfumes da Gi | Alta Perfumaria">
-    <meta property="og:description" content="Perfumaria inspirada nos grandes lançamentos, com ótima fixação e preço justo.">
+    <meta property="og:description" content="Desperte sua essência única com a nossa coleção exclusiva de perfumes.">
     <meta property="og:url" content="https://perfumesdagi.com.br">
     <meta property="og:image" content="https://perfumesdagi.com.br/favicon.png">
     <meta property="og:type" content="website">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
     <script src="js/tailwind-config.js"></script>
+    
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-cream text-ink font-sans antialiased selection:bg-terracotta selection:text-cream">
+<body class="bg-[#FAFAFA] text-gray-800 font-sans antialiased selection:bg-gold selection:text-white relative">
 
-    <header class="bg-cream/90 backdrop-blur-sm sticky top-0 z-40 border-b border-line">
-        <div class="max-w-[1480px] mx-auto px-5 md:px-10 py-4 flex flex-col md:flex-row gap-4 justify-between items-center">
-
-            <a href="#" class="font-serif text-2xl md:text-[1.7rem] tracking-[0.16em] uppercase leading-none select-none">
-                Perfumes <span class="text-terracotta">da Gi</span>
-            </a>
-
-            <div class="relative w-full md:w-80">
-                <input type="text" id="search-input" onkeyup="window.searchProducts()" placeholder="Buscar por nome, marca ou setor" class="w-full bg-transparent border-0 border-b border-ink/25 py-2 pl-1 pr-9 text-sm placeholder:text-muted focus:border-terracotta outline-none transition">
-                <i class="fas fa-search absolute right-1 top-1/2 -translate-y-1/2 text-muted text-sm"></i>
+    <header class="bg-white/90 backdrop-blur-sm text-midnight sticky top-0 z-40 border-b border-gray-100 shadow-sm">
+        <div class="container mx-auto px-4 md:px-6 py-3 flex flex-col md:flex-row gap-4 justify-between items-center">
+            
+            <h1 class="text-4xl md:text-5xl text-midnight font-vibes drop-shadow-sm py-1">
+                Perfumes da Gi
+            </h1>
+            
+            <div class="relative w-full md:w-96">
+                <input type="text" id="search-input" onkeyup="window.searchProducts()" placeholder="Buscar por nome, marca ou setor..." class="w-full bg-gray-50 border border-gray-200 rounded-full py-2 pl-5 pr-12 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition">
+                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gold">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
 
-            <button onclick="window.toggleCart()" class="relative p-2.5 hover:text-terracotta transition-colors">
-                <i class="fas fa-shopping-bag text-lg"></i>
-                <span id="cart-count" class="absolute -top-0.5 -right-0.5 bg-terracotta text-cream text-[10px] font-medium leading-none rounded-full size-4 flex items-center justify-center">0</span>
+            <button onclick="window.toggleCart()" class="relative p-2 group transition duration-300">
+                <i class="fas fa-shopping-bag text-2xl group-hover:text-gold transition-colors"></i>
+                <span id="cart-count" class="absolute top-0 right-0 bg-gold text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">0</span>
             </button>
         </div>
 
-        <!-- Sector navigation bar — pills injected by JS a partir do Firestore -->
-        <div id="sector-nav-wrapper" class="hidden border-t border-line">
-            <div id="sector-nav" class="max-w-[1480px] mx-auto px-5 md:px-10 py-2.5 flex gap-5 overflow-x-auto">
+        <!-- Sector navigation bar — pills injected by JS based on active sectors -->
+        <div id="sector-nav-wrapper" class="hidden border-t border-gray-100 bg-white/95">
+            <div id="sector-nav" class="container mx-auto px-4 md:px-6 py-2.5 flex gap-2 overflow-x-auto">
             </div>
         </div>
     </header>
 
-    <section id="hero-section" class="relative transition-all duration-500">
-        <div class="grid md:grid-cols-12 min-h-[70vh] md:min-h-[80vh]">
-            <div class="md:col-span-5 flex items-center bg-cream order-2 md:order-1">
-                <div class="px-6 md:px-14 py-14 md:py-20 max-w-xl">
-                    <p class="eyebrow text-terracotta">Perfumaria importada · Manaus</p>
-                    <h1 class="mt-5 font-serif text-5xl md:text-6xl leading-[0.98]">
-                        Uma essência<br><em class="not-italic text-terracotta">que fica.</em>
-                    </h1>
-                    <p class="mt-7 text-muted leading-relaxed text-[15px] max-w-md">
-                        Fragrâncias árabes e inspiradas nos grandes lançamentos internacionais, com ótima fixação e preço justo — não são os perfumes originais das marcas, e sim interpretações de alta qualidade.
-                    </p>
-                    <div class="mt-9 flex flex-wrap gap-3">
-                        <a href="#catalogo" class="inline-flex items-center gap-2 px-8 py-4 bg-ink text-cream eyebrow hover:bg-terracotta transition-colors">
-                            Ver coleção
-                        </a>
-                        <a href="https://wa.me/5592994246242" target="_blank" class="inline-flex items-center gap-2 px-8 py-4 border border-ink eyebrow hover:bg-ink hover:text-cream transition-colors">
-                            Falar no WhatsApp
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="md:col-span-7 relative overflow-hidden bg-blush order-1 md:order-2 flex items-center justify-center min-h-[40vh]">
-                <svg viewBox="0 0 220 300" class="w-40 md:w-56 h-auto" aria-hidden="true">
-                    <rect x="78" y="30" width="64" height="16" rx="3" fill="#2D2522"/>
-                    <rect x="94" y="8" width="32" height="24" rx="2" fill="#2D2522" opacity="0.85"/>
-                    <path d="M66 46 Q66 38 76 38 L144 38 Q154 38 154 46 L164 84 Q168 94 168 104 L168 268 Q168 282 154 282 L66 282 Q52 282 52 268 L52 104 Q52 94 56 84 Z" fill="none" stroke="#2D2522" stroke-width="1.3"/>
-                    <line x1="52" y1="130" x2="168" y2="130" stroke="#2D2522" stroke-width="1"/>
-                    <text x="110" y="180" text-anchor="middle" fill="#2D2522" font-family="'Cormorant Garamond', serif" font-size="15" letter-spacing="2">DA GI</text>
-                </svg>
-            </div>
+    <section id="hero-section" class="relative bg-midnight text-white py-24 flex items-center justify-center overflow-hidden transition-all duration-500">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+        <div class="relative z-10 text-center px-4 max-w-3xl">
+            <span class="text-gold uppercase tracking-[0.3em] text-sm font-semibold mb-3 block">A Arte da Perfumaria</span>
+            <h2 class="text-4xl md:text-6xl font-serif mb-5 leading-tight">Desperte sua <br/><span class="font-vibes text-gold text-5xl md:text-7xl font-normal leading-none mt-2 block">essência única</span></h2>
+            <a href="#catalogo" class="inline-block border border-gold text-gold hover:bg-gold hover:text-midnight px-8 py-3 uppercase tracking-widest text-xs transition-all duration-500 rounded-sm mt-4">Explorar Coleção</a>
         </div>
     </section>
 
-    <div class="border-b border-line bg-sand/40">
-        <div class="max-w-[1480px] mx-auto px-5 md:px-10 py-5 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-10 text-center md:text-left">
-            <div class="flex items-center gap-3 justify-center md:justify-start">
-                <i class="fas fa-flask text-terracotta"></i>
-                <span class="text-xs text-ink/70">Interpretações de alta fixação</span>
-            </div>
-            <div class="flex items-center gap-3 justify-center md:justify-start">
-                <i class="fas fa-location-dot text-terracotta"></i>
-                <span class="text-xs text-ink/70">Entrega em Manaus</span>
-            </div>
-            <div class="flex items-center gap-3 justify-center md:justify-start">
-                <i class="fab fa-whatsapp text-terracotta"></i>
-                <span class="text-xs text-ink/70">Pedido direto no WhatsApp</span>
-            </div>
-        </div>
-    </div>
+    <main id="catalogo" class="container mx-auto px-4 md:px-6 py-16">
+        
+        <div id="search-count" class="hidden text-center text-sm text-gray-500 mb-8 font-medium italic"></div>
 
-    <main id="catalogo" class="max-w-[1480px] mx-auto px-5 md:px-10 py-16 md:py-20">
-
-        <div id="search-count" class="hidden text-center text-sm text-muted mb-8 italic"></div>
-
-        <div id="no-results" class="hidden text-center py-20 text-muted flex flex-col items-center gap-4">
+        <div id="no-results" class="hidden text-center py-20 text-gray-500 flex flex-col items-center gap-4">
             <i class="fas fa-search text-5xl opacity-30"></i>
             <p class="text-xl font-light">Nenhum produto corresponde à sua busca.</p>
-            <button onclick="window.clearSearch()" class="text-terracotta link-underline-reveal">Limpar busca</button>
+            <button onclick="window.clearSearch()" class="text-gold hover:underline">Limpar busca</button>
         </div>
 
-        <!-- Setores renderizados dinamicamente a partir da coleção Firestore "setores" -->
+        <!-- Setores renderizados dinamicamente a partir da coleção Firestore "setores" (gerenciável no admin) -->
         <div id="sections-container"></div>
     </main>
 
-    <footer class="mt-20 bg-cream border-t border-line">
-        <div class="max-w-[1480px] mx-auto px-6 py-16 flex flex-col items-center text-center gap-4">
-            <span class="font-serif text-2xl tracking-[0.16em] uppercase">Perfumes <span class="text-terracotta">da Gi</span></span>
-            <p class="text-sm text-muted font-light max-w-sm">Perfumaria inspirada nos grandes lançamentos. Atendimento exclusivo via WhatsApp, com entrega em Manaus.</p>
-            <p class="text-xs text-muted/70 font-light mt-4">&copy; 2026 Perfumes da Gi. Todos os direitos reservados.</p>
+    <footer class="bg-midnight text-white py-12 border-t-4 border-gold">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-vibes mb-4 drop-shadow-sm text-gold">Perfumes da Gi</h2>
+            <p class="text-sm text-gray-400 font-light">Atendimento exclusivo via WhatsApp.</p>
+            <p class="text-sm text-gray-400 font-light mt-2">&copy; 2026 Perfumes da Gi. Todos os direitos reservados.</p>
         </div>
     </footer>
 
-    <a href="https://wa.me/5592994246242?text=Ol%C3%A1%21%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20os%20perfumes." target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-300 z-30 group">
+    <a href="https://wa.me/5592994246242?text=Ol%C3%A1%21%20Gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20os%20perfumes." target="_blank" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 hover:shadow-green-500/30 transition-all duration-300 z-30 group">
         <i class="fab fa-whatsapp text-3xl"></i>
-        <span class="absolute right-16 bg-ink text-cream text-xs font-medium px-3 py-1.5 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+        <span class="absolute right-16 bg-white text-midnight text-xs font-semibold px-3 py-1.5 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap border border-gray-100">
             Dúvidas? Chame aqui!
         </span>
     </a>
 
-    <div id="cart-overlay" onclick="window.toggleCart()" class="fixed inset-0 bg-ink/40 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
-
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-96 bg-cream shadow-2xl transform translate-x-full transition-transform duration-500 z-50 flex flex-col">
-        <div class="px-6 py-5 border-b border-line flex justify-between items-center">
-            <h2 class="text-2xl font-serif">Sacola</h2>
-            <button onclick="window.toggleCart()" class="text-muted hover:text-terracotta transition-colors text-xl"><i class="fas fa-times"></i></button>
+    <div id="cart-overlay" onclick="window.toggleCart()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full md:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-500 z-50 flex flex-col">
+        <div class="px-6 py-5 bg-white border-b flex justify-between items-center">
+            <h2 class="text-2xl font-serif text-midnight">Sua Sacola</h2>
+            <button onclick="window.toggleCart()" class="text-gray-400 hover:text-gold transition-colors duration-300 text-xl"><i class="fas fa-times"></i></button>
         </div>
-
+        
         <div id="cart-items" class="p-6 flex-1 overflow-y-auto flex flex-col gap-6"></div>
-
-        <div class="p-6 border-t border-line space-y-4">
-            <div class="flex justify-between font-serif text-xl">
+        
+        <div class="p-6 bg-gray-50 border-t border-gray-100">
+            <div class="flex justify-between font-serif text-xl text-midnight mb-6">
                 <span>Total</span>
                 <span id="cart-total">R$ 0,00</span>
             </div>
-            <button onclick="window.checkout()" class="w-full bg-ink text-cream eyebrow py-4 hover:bg-terracotta transition-colors duration-500">
+            <button onclick="window.checkout()" class="w-full bg-midnight text-white uppercase tracking-widest text-sm py-4 rounded-sm hover:bg-gold transition-colors duration-500 shadow-lg">
                 Finalizar no WhatsApp
             </button>
-            <button onclick="window.toggleCart()" class="w-full text-xs text-muted hover:text-ink link-underline-reveal">Continuar comprando</button>
         </div>
     </div>
 
-    <div id="product-modal" class="fixed inset-0 bg-ink/70 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="if(event.target === this) window.closeProductModal()">
-        <div id="product-modal-content" class="bg-cream shadow-2xl w-full max-w-4xl relative overflow-hidden flex flex-col md:flex-row transform scale-95 transition-transform duration-300 max-h-[90vh]">
-
-            <button onclick="window.closeProductModal()" class="absolute top-4 right-4 text-muted hover:text-ink z-10 transition-colors text-2xl bg-cream/80 rounded-full w-8 h-8 flex items-center justify-center">
+    <div id="product-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="if(event.target === this) window.closeProductModal()">
+        <div id="product-modal-content" class="bg-white rounded-lg shadow-2xl w-full max-w-4xl relative overflow-hidden flex flex-col md:flex-row transform scale-95 transition-transform duration-300 max-h-[90vh]">
+            
+            <button onclick="window.closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-midnight z-10 transition-colors text-2xl bg-white/80 rounded-full w-8 h-8 flex items-center justify-center">
                 <i class="fas fa-times"></i>
             </button>
 
-            <div class="w-full md:w-1/2 bg-sand/40 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-line relative min-h-[300px]">
-                <img id="modal-img" src="" alt="Produto" class="max-h-[400px] w-full object-contain">
-                <div id="modal-esgotado" class="hidden absolute top-4 left-4 eyebrow bg-ink text-cream px-3 py-1.5 z-10">Esgotado</div>
+            <div class="w-full md:w-1/2 bg-gray-50 flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-gray-100 relative min-h-[300px]">
+                <img id="modal-img" src="" alt="Produto" class="max-h-[400px] w-full object-contain drop-shadow-xl">
+                <div id="modal-esgotado" class="hidden absolute top-4 left-4 bg-midnight text-white text-xs uppercase tracking-wider px-3 py-1 rounded-full shadow-md z-10">Esgotado</div>
             </div>
 
-            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-cream overflow-y-auto">
-                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3">
-                    <span id="modal-sector-badge" class="eyebrow text-terracotta"></span>
-                    <span id="modal-family" class="hidden eyebrow text-muted"></span>
-                </div>
-                <h2 id="modal-name" class="text-3xl md:text-4xl font-serif mb-1 leading-tight"></h2>
-                <p id="modal-inspired" class="hidden text-xs text-muted italic mb-4"></p>
-                <p id="modal-price" class="text-2xl font-light mb-6"></p>
-
-                <p id="modal-description" class="text-sm text-ink/70 mb-4 leading-relaxed italic"></p>
+            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white overflow-y-auto">
+                <span class="mb-2">
+                    <span id="modal-sector-badge" class="text-gold uppercase tracking-widest text-xs font-semibold"></span><span id="modal-family" class="hidden text-gray-400 text-xs normal-case tracking-normal"></span>
+                </span>
+                <h2 id="modal-name" class="text-3xl md:text-4xl font-serif text-midnight mb-1 leading-tight"></h2>
+                <p id="modal-inspired" class="hidden text-xs text-gray-400 italic mb-3"></p>
+                <div class="w-12 h-px bg-gold mb-4"></div>
+                <p id="modal-price" class="text-3xl text-gray-800 font-light mb-6"></p>
+                
+                <p id="modal-description" class="text-sm text-gray-500 mb-4 leading-relaxed italic"></p>
 
                 <div id="modal-notes" class="hidden mb-6"></div>
 
@@ -192,3 +152,4 @@
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
+                   

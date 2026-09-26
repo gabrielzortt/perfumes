@@ -22,7 +22,9 @@ let selectedFile = null;
 let currentImageUrl = "";
 let activeFilter = "todos";
 
-// -------------------- Firestore listeners --------------------
+function getSectorList() {
+    return resolveSectors(liveSectors);
+}
 
 onSnapshot(collection(db, "produtos"), (snapshot) => {
     products = [];
@@ -35,16 +37,14 @@ onSnapshot(collection(db, "setores"), async (snapshot) => {
     snapshot.forEach((d) => liveSectors.push({ id: d.id, ...d.data() }));
 
     // Primeira vez que o painel abre e a coleção ainda não existe: semeia os
-    // 5 setores atuais para que fiquem editáveis daqui pra frente.
+    // 5 setores atuais para ficarem editáveis daqui pra frente.
     if (liveSectors.length === 0 && !seeded) {
         seeded = true;
         const check = await getDocs(collection(db, "setores"));
         if (check.empty) {
-            for (const s of DEFAULT_SECTORS) {
-                await setDoc(doc(db, "setores", s.key), s);
-            }
+            for (const s of DEFAULT_SECTORS) await setDoc(doc(db, "setores", s.key), s);
         }
-        return; // o próprio onSnapshot acima vai disparar de novo com os dados semeados
+        return;
     }
 
     window.renderSectorChips();
@@ -53,21 +53,17 @@ onSnapshot(collection(db, "setores"), async (snapshot) => {
     window.renderTable();
 });
 
-function getSectorList() {
-    return resolveSectors(liveSectors);
-}
-
 // -------------------- Setores: CRUD --------------------
 
 window.renderSectorChips = function() {
     const wrap = document.getElementById('sector-chips');
     wrap.innerHTML = getSectorList().map(s => `
         <span class="sector-chip">
-            <span>${s.icon || '📦'}</span>
+            <span>${s.icon || ''}</span>
             <span>${s.label}</span>
-            <span class="text-ink/30">#${s.order ?? 0}</span>
-            <button onclick="window.editSector('${s.key}')" class="text-ink/40 hover:text-terracotta ml-1" title="Editar"><i class="fas fa-pen text-[10px]"></i></button>
-            <button onclick="window.deleteSector('${s.key}')" class="text-ink/40 hover:text-red-500" title="Excluir"><i class="fas fa-trash text-[10px]"></i></button>
+            <span class="text-gray-300">#${s.order ?? 0}</span>
+            <button onclick="window.editSector('${s.key}')" class="text-gray-400 hover:text-gold ml-1" title="Editar"><i class="fas fa-pen text-[10px]"></i></button>
+            <button onclick="window.deleteSector('${s.key}')" class="text-gray-400 hover:text-red-500" title="Excluir"><i class="fas fa-trash text-[10px]"></i></button>
         </span>
     `).join('');
 }
@@ -76,9 +72,8 @@ window.saveSector = async function(e) {
     e.preventDefault();
     const editingKey = document.getElementById('sector-id').value;
     const label = document.getElementById('sector-label').value.trim();
-    const icon = document.getElementById('sector-icon').value.trim() || '📦';
+    const icon = document.getElementById('sector-icon').value.trim();
     const order = parseInt(document.getElementById('sector-order').value) || 0;
-
     const key = editingKey || slugify(label) || `setor-${Date.now()}`;
 
     try {
@@ -103,7 +98,7 @@ window.editSector = function(key) {
 window.deleteSector = async function(key) {
     const inUse = products.some(p => normalizeBrandKey(p.brand) === key);
     const msg = inUse
-        ? 'Existem produtos usando este setor. Se excluir, eles continuam aparecendo na loja agrupados pelo nome atual, mas o setor some da lista de gestão. Continuar?'
+        ? 'Existem produtos usando este setor. Eles continuam aparecendo na loja agrupados pelo nome atual, mas o setor some da lista de gestão. Continuar?'
         : 'Excluir este setor?';
     if (!confirm(msg)) return;
     try {
@@ -129,8 +124,8 @@ window.populateBrandSelect = function() {
 window.renderFilterPills = function() {
     const wrap = document.getElementById('filter-pills');
     const sectors = getSectorList();
-    wrap.innerHTML = `<button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill ${activeFilter === 'todos' ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-ink ${activeFilter === 'todos' ? 'bg-ink text-cream' : 'text-ink/60'} transition">Todos</button>` +
-        sectors.map(s => `<button onclick="window.setFilter('${s.key}')" data-filter="${s.key}" class="filter-pill ${activeFilter === s.key ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-line ${activeFilter === s.key ? 'bg-ink text-cream border-ink' : 'text-ink/60 hover:border-ink'} transition">${s.icon || ''} ${s.label}</button>`).join('');
+    wrap.innerHTML = `<button onclick="window.setFilter('todos')" data-filter="todos" class="filter-pill ${activeFilter === 'todos' ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-midnight ${activeFilter === 'todos' ? 'bg-midnight text-white' : 'text-gray-600'} transition">Todos</button>` +
+        sectors.map(s => `<button onclick="window.setFilter('${s.key}')" data-filter="${s.key}" class="filter-pill ${activeFilter === s.key ? 'active' : ''} text-xs px-3 py-1.5 rounded-full border border-gray-200 ${activeFilter === s.key ? 'bg-midnight text-white border-midnight' : 'text-gray-600 hover:border-midnight hover:bg-midnight hover:text-white'} transition">${s.icon || ''} ${s.label}</button>`).join('');
 }
 
 window.setFilter = function(filter) {
@@ -199,8 +194,8 @@ window.renderTable = function() {
         const finalImgSrc = p.image || p.img || "";
 
         const imgTag = finalImgSrc !== ""
-            ? `<img src="${finalImgSrc}" alt="${p.name}" class="w-12 h-12 object-contain p-0.5 border border-line rounded-sm">`
-            : `<div class="w-12 h-12 bg-sand/40 border border-line rounded-sm flex items-center justify-center text-[7px] text-ink/30 font-serif uppercase p-0.5 text-center">sem<br>foto</div>`;
+            ? `<img src="${finalImgSrc}" alt="${p.name}" class="w-12 h-12 object-contain p-0.5 border rounded-sm">`
+            : `<div class="w-12 h-12 bg-gray-100 border rounded-sm flex items-center justify-center text-[7px] text-gray-400 font-serif uppercase p-0.5 text-center">sem<br>foto</div>`;
 
         const sectorKey = normalizeBrandKey(p.brand);
         const sectorMeta = getSectorList().find(s => s.key === sectorKey);
@@ -208,15 +203,15 @@ window.renderTable = function() {
 
         const hasFicha = !!(p.description || p.family || p.notesTop);
         const fichaBadge = hasFicha
-            ? `<span class="bg-terracotta/10 text-terracotta text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check"></i></span>`
-            : `<span class="text-ink/20 text-xs">—</span>`;
+            ? `<span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fas fa-check"></i></span>`
+            : `<span class="text-gray-300 text-xs">—</span>`;
 
         tbody.innerHTML += `
-            <tr class="border-b border-line hover:bg-sand/20 transition">
+            <tr class="border-b hover:bg-gray-50 transition">
                 <td class="p-4">${imgTag}</td>
-                <td class="p-4 font-semibold">${p.name}</td>
-                <td class="p-4"><span class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide bg-sand/60 text-ink/70">${sectorDisplay}</span></td>
-                <td class="p-4 font-semibold text-terracotta">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</td>
+                <td class="p-4 font-semibold text-midnight">${p.name}</td>
+                <td class="p-4"><span class="text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide bg-gray-100 text-gray-600">${sectorDisplay}</span></td>
+                <td class="p-4 font-semibold text-gold">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</td>
                 <td class="p-4">${stockLabel}</td>
                 <td class="p-4">${fichaBadge}</td>
                 <td class="p-4">
@@ -252,7 +247,7 @@ window.saveProduct = async function(e) {
         return;
     }
 
-    btnSave.innerText = "Enviando Foto...";
+    btnSave.innerText = "Enviando Foto pro Cloudinary...";
     btnSave.disabled = true;
 
     let finalImageUrl = currentImageUrl;
@@ -305,7 +300,7 @@ window.saveProduct = async function(e) {
 window.editProduct = function(id) {
     const product = products.find(p => p.id === id);
 
-    document.getElementById('form-title').innerHTML = `<i class="fas fa-edit text-terracotta"></i> Editar Produto`;
+    document.getElementById('form-title').innerHTML = `<i class="fas fa-edit text-gold"></i> Editar Produto`;
     document.getElementById('prod-name').focus();
 
     document.getElementById('prod-id').value = product.id;
@@ -350,7 +345,7 @@ window.deleteProduct = async function(id) {
 }
 
 window.resetForm = function() {
-    document.getElementById('form-title').innerHTML = `<i class="fas fa-plus-circle text-terracotta"></i> Novo Produto`;
+    document.getElementById('form-title').innerHTML = `<i class="fas fa-plus-circle text-gold"></i> Novo Produto`;
     document.getElementById('prod-id').value = '';
     document.getElementById('product-form').reset();
     window.populateBrandSelect();
@@ -364,7 +359,7 @@ window.autoFillNotes = async function() {
     const candidates = products.filter(p => !p.description && !p.family && !p.notesTop);
 
     if (candidates.length === 0) {
-        alert('Todos os produtos já têm ficha própria ou nenhum produto casou com a biblioteca. Nada para preencher.');
+        alert('Todos os produtos já têm ficha própria. Nada para preencher.');
         return;
     }
 
@@ -402,6 +397,6 @@ window.autoFillNotes = async function() {
     }
 
     btn.disabled = false;
-    btn.innerHTML = `<i class="fas fa-wand-magic-sparkles"></i> Preencher fichas automaticamente`;
-    alert(`Pronto! ${filled} produto(s) receberam ficha olfativa automaticamente.${skipped ? ` ${skipped} não bateram com a biblioteca — pode preencher manualmente editando o produto.` : ''}`);
+    btn.innerHTML = `<i class="fas fa-wand-magic-sparkles"></i> Preencher fichas`;
+    alert(`Pronto! ${filled} produto(s) receberam ficha olfativa automaticamente.${skipped ? ` ${skipped} não bateram com a biblioteca.` : ''}`);
 }

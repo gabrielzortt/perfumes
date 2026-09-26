@@ -19,8 +19,6 @@ let products = [];
 let liveSectors = [];
 let cart = [];
 
-const GENERIC_DESC = 'Produto selecionado com cuidado para você.';
-
 // -------------------- Firestore listeners --------------------
 
 onSnapshot(collection(db, "produtos"), (snapshot) => {
@@ -37,25 +35,22 @@ onSnapshot(collection(db, "setores"), (snapshot) => {
     window.renderProducts();
 });
 
-// -------------------- Sector helpers --------------------
+// -------------------- Setor helpers (setores agora vêm do Firestore, geridos pelo admin) --------------------
 
 function getSectorList() {
     return resolveSectors(liveSectors);
 }
 
-// Devolve a ficha do setor para uma chave, criando uma entrada "avulsa" se o
-// produto referenciar um setor que não existe mais (nunca esconde produtos).
 function getSectorMeta(brandRaw) {
     const key = normalizeBrandKey(brandRaw);
     const found = getSectorList().find(s => (s.key || s.id) === key);
     if (found) return found;
-    return { key, label: brandRaw || 'Outros', icon: '📦', order: 999 };
+    return { key, label: brandRaw || 'Brand', icon: '', order: 999, desc: 'Produto selecionado com cuidado para você.' };
 }
 
-// -------------------- Fragrance notes (ficha olfativa) --------------------
+// -------------------- Ficha olfativa (biblioteca pesquisada + campos do admin) --------------------
 
 function getFragranceInfo(p) {
-    // 1) Ficha própria salva no Firestore pelo admin sempre tem prioridade
     const hasOwn = p.description || p.family || p.notesTop || p.notesHeart || p.notesBase;
     if (hasOwn) {
         return {
@@ -66,7 +61,6 @@ function getFragranceInfo(p) {
             blurb: p.description || '',
         };
     }
-    // 2) Biblioteca curada, casada pelo nome do perfume original referenciado
     const ref = extractReference(p.name);
     if (FRAGRANCE_LIBRARY[ref]) return FRAGRANCE_LIBRARY[ref];
     const keys = Object.keys(FRAGRANCE_LIBRARY).sort((a, b) => b.length - a.length);
@@ -76,7 +70,7 @@ function getFragranceInfo(p) {
     return null;
 }
 
-// -------------------- Rendering --------------------
+// -------------------- Renderização --------------------
 
 window.renderProducts = function(productsToRender = products) {
     const container = document.getElementById('sections-container');
@@ -85,19 +79,17 @@ window.renderProducts = function(productsToRender = products) {
 
     container.innerHTML = '';
 
-    // Agrupa produtos por chave de setor
     const grouped = {};
     productsToRender.forEach(p => {
         const key = normalizeBrandKey(p.brand);
         (grouped[key] = grouped[key] || []).push(p);
     });
 
-    // Lista efetiva de setores (Firestore ou semente padrão) + setores "órfãos"
-    // que existem nos produtos mas não têm mais ficha cadastrada.
     const known = getSectorList();
     const knownKeys = new Set(known.map(s => s.key || s.id));
-    const orphanKeys = Object.keys(grouped).filter(k => !knownKeys.has(k));
-    const orphanSectors = orphanKeys.map(k => ({ key: k, label: grouped[k][0].brand || k, icon: '📦', order: 999 }));
+    const orphanSectors = Object.keys(grouped)
+        .filter(k => !knownKeys.has(k))
+        .map(k => ({ key: k, label: grouped[k][0].brand || k, icon: '', order: 999 }));
     const allSections = [...known, ...orphanSectors];
 
     const activePills = [];
@@ -107,7 +99,7 @@ window.renderProducts = function(productsToRender = products) {
         const items = grouped[key];
         if (!items || items.length === 0) return;
 
-        activePills.push({ key, label: sector.label, icon: sector.icon });
+        activePills.push(sector);
 
         const cardsHtml = items.map(p => renderCard(p)).join('');
 
@@ -115,23 +107,23 @@ window.renderProducts = function(productsToRender = products) {
         section.id = `section-${key}`;
         section.className = 'mb-20 product-section scroll-mt-32';
         section.innerHTML = `
-            <div class="flex items-baseline justify-between border-b border-line pb-3 mb-8">
-                <h3 class="font-serif text-3xl md:text-4xl">${sector.label}</h3>
-                <span class="text-terracotta text-sm">${sector.icon || ''}</span>
+            <div class="text-center mb-10">
+                <span class="text-gold uppercase tracking-[0.25em] text-xs font-semibold mb-2 block">${sector.icon || ''} Setor</span>
+                <h3 class="text-4xl font-serif text-midnight mb-2">${sector.label}</h3>
+                <div class="w-16 h-px bg-gold mx-auto"></div>
             </div>
-            <div id="grid-${key}" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-7">${cardsHtml}</div>
+            <div id="grid-${key}" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">${cardsHtml}</div>
         `;
         container.appendChild(section);
     });
 
-    // Nav de setores (só os que têm produtos)
     const navWrapper = document.getElementById('sector-nav-wrapper');
     const nav = document.getElementById('sector-nav');
     nav.innerHTML = '';
     if (activePills.length > 0) {
         navWrapper.classList.remove('hidden');
         activePills.forEach(s => {
-            nav.innerHTML += `<a href="#section-${s.key}" class="sector-pill">${s.icon || ''} ${s.label}</a>`;
+            nav.innerHTML += `<a href="#section-${s.key || s.id}" class="sector-pill">${s.icon || ''} ${s.label}</a>`;
         });
     } else {
         navWrapper.classList.add('hidden');
@@ -143,28 +135,32 @@ window.renderProducts = function(productsToRender = products) {
 function renderCard(p) {
     const isEsgotado = p.stock <= 0;
     const imageHtml = p.image && p.image !== ""
-        ? `<img src="${p.image}" alt="${p.name}" class="product-image">`
-        : `<span class="text-muted font-serif tracking-widest text-xs uppercase p-4 text-center">sem imagem</span>`;
-
-    const quickAdd = isEsgotado
-        ? `<div class="quick-add always bg-sand/95 text-ink/40 eyebrow text-center py-3">Esgotado</div>`
-        : `<button onclick="event.stopPropagation(); window.addToCart('${p.id}', this)" class="quick-add w-full bg-ink/95 text-cream eyebrow text-center py-3 hover:bg-terracotta transition-colors">Adicionar à sacola</button>`;
+        ? `<img src="${p.image}" alt="${p.name}" class="product-image transform group-hover:scale-105 transition-transform duration-700">`
+        : `<span class="text-gray-400 font-serif tracking-widest text-xs uppercase transform group-hover:scale-110 transition-transform duration-700 p-4 text-center">sem imagem</span>`;
 
     return `
-        <article class="group relative">
-            <div onclick="window.openProductModal('${p.id}')" class="relative aspect-square bg-sand/40 overflow-hidden hover-zoom-img cursor-pointer">
+        <div class="group bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden relative flex flex-col">
+            <div onclick="window.openProductModal('${p.id}')" class="h-64 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden relative border-b border-gray-100 cursor-pointer">
                 ${imageHtml}
-                ${quickAdd}
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 z-0"></div>
+                ${isEsgotado ? '<div class="absolute top-3 right-3 bg-midnight text-white text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-md z-10">Esgotado</div>' : ''}
             </div>
-            <div onclick="window.openProductModal('${p.id}')" class="mt-3 flex items-start justify-between gap-3 cursor-pointer">
-                <h4 class="link-underline-reveal font-serif text-base md:text-lg leading-tight line-clamp-2">${p.name}</h4>
-                <span class="text-sm shrink-0 pt-0.5">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</span>
+            
+            <div class="p-5 flex flex-col flex-1 bg-white relative z-10">
+                <h4 onclick="window.openProductModal('${p.id}')" class="text-base font-serif text-midnight mb-1 hover:text-gold transition-colors line-clamp-2 h-12 cursor-pointer">${p.name}</h4>
+                <p class="text-xl text-gray-800 font-light mb-5">R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}</p>
+                
+                <div class="mt-auto">
+                    ${isEsgotado
+                        ? '<button disabled class="w-full border border-gray-200 text-gray-400 py-2.5 uppercase tracking-widest text-xs cursor-not-allowed rounded-sm">Indisponível</button>'
+                        : `<button onclick="window.addToCart('${p.id}', this)" class="w-full bg-white border border-midnight text-midnight py-2.5 uppercase tracking-widest text-xs hover:bg-midnight hover:text-white transition-all duration-300 rounded-sm">Adicionar à Sacola</button>`}
+                </div>
             </div>
-        </article>
+        </div>
     `;
 }
 
-// -------------------- Product modal --------------------
+// -------------------- Modal do produto --------------------
 
 window.openProductModal = function(id) {
     const p = products.find(prod => prod.id === id);
@@ -176,9 +172,28 @@ window.openProductModal = function(id) {
     const frag = getFragranceInfo(p);
 
     document.getElementById('modal-name').innerText = p.name;
-    document.getElementById('modal-sector-badge').innerText = sector.label;
+    document.getElementById('modal-sector-badge').innerText = `Linha ${sector.label}`;
     document.getElementById('modal-price').innerText = `R$ ${parseFloat(p.price).toFixed(2).replace('.', ',')}`;
-    document.getElementById('modal-description').innerText = (frag && frag.blurb) ? frag.blurb : GENERIC_DESC;
+    document.getElementById('modal-description').innerText = (frag && frag.blurb) ? frag.blurb : (sector.desc || 'Produto selecionado com cuidado para você.');
+
+    const familyEl = document.getElementById('modal-family');
+    const notesEl = document.getElementById('modal-notes');
+    if (frag && (frag.family || frag.top || frag.heart || frag.base)) {
+        familyEl.innerText = frag.family ? `· ${frag.family}` : '';
+        familyEl.classList.toggle('hidden', !frag.family);
+
+        const rows = [['Topo', frag.top], ['Coração', frag.heart], ['Fundo', frag.base]].filter(([, v]) => v);
+        notesEl.innerHTML = rows.map(([label, v]) => `
+            <div class="flex gap-3 text-xs text-gray-500 py-1.5 border-t border-gray-100 first:border-t-0">
+                <span class="w-16 shrink-0 uppercase tracking-wide text-gold font-semibold">${label}</span>
+                <span>${v}</span>
+            </div>
+        `).join('');
+        notesEl.classList.toggle('hidden', rows.length === 0);
+    } else {
+        familyEl.classList.add('hidden');
+        notesEl.classList.add('hidden');
+    }
 
     const inspiredEl = document.getElementById('modal-inspired');
     const displayRef = extractReferenceDisplay(p.name);
@@ -187,31 +202,6 @@ window.openProductModal = function(id) {
         inspiredEl.classList.remove('hidden');
     } else {
         inspiredEl.classList.add('hidden');
-    }
-
-    // Família + pirâmide olfativa (só aparece quando há dados)
-    const familyEl = document.getElementById('modal-family');
-    const notesEl = document.getElementById('modal-notes');
-    if (frag && (frag.family || frag.top || frag.heart || frag.base)) {
-        familyEl.innerText = frag.family || '';
-        familyEl.classList.toggle('hidden', !frag.family);
-
-        const rows = [
-            ['Topo', frag.top],
-            ['Coração', frag.heart],
-            ['Fundo', frag.base],
-        ].filter(([, v]) => v);
-
-        notesEl.innerHTML = rows.map(([label, v]) => `
-            <div class="flex gap-3 text-xs text-ink/70 py-1.5 border-t border-line first:border-t-0">
-                <span class="w-16 shrink-0 uppercase tracking-wide text-terracotta font-medium">${label}</span>
-                <span>${v}</span>
-            </div>
-        `).join('');
-        notesEl.classList.toggle('hidden', rows.length === 0);
-    } else {
-        familyEl.classList.add('hidden');
-        notesEl.classList.add('hidden');
     }
 
     const imgEl = document.getElementById('modal-img');
@@ -227,9 +217,9 @@ window.openProductModal = function(id) {
 
     const btnContainer = document.getElementById('modal-action-btn');
     if (isEsgotado) {
-        btnContainer.innerHTML = '<button disabled class="w-full bg-sand text-ink/30 py-4 text-sm cursor-not-allowed">Produto Esgotado</button>';
+        btnContainer.innerHTML = '<button disabled class="w-full bg-gray-100 text-gray-400 py-4 uppercase tracking-widest text-sm cursor-not-allowed rounded-sm">Produto Esgotado</button>';
     } else {
-        btnContainer.innerHTML = `<button onclick="window.addToCart('${p.id}', this); setTimeout(window.closeProductModal, 1000);" class="w-full bg-ink text-cream py-4 text-sm hover:bg-terracotta transition-colors duration-500">Adicionar à Sacola</button>`;
+        btnContainer.innerHTML = `<button onclick="window.addToCart('${p.id}', this); setTimeout(window.closeProductModal, 1000);" class="w-full bg-midnight text-white py-4 uppercase tracking-widest text-sm hover:bg-gold transition-colors duration-500 rounded-sm shadow-lg">Adicionar à Sacola</button>`;
     }
 
     modal.classList.remove('hidden');
@@ -253,7 +243,7 @@ window.closeProductModal = function() {
     }, 300);
 }
 
-// -------------------- Search --------------------
+// -------------------- Busca --------------------
 
 window.searchProducts = function() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
@@ -294,7 +284,7 @@ window.clearSearch = function() {
     window.searchProducts();
 }
 
-// -------------------- Cart --------------------
+// -------------------- Carrinho --------------------
 
 window.toggleCart = function() {
     const sidebar = document.getElementById('cart-sidebar');
@@ -328,10 +318,12 @@ window.addToCart = function(id, btnElement) {
         if (btnElement) {
             const originalText = btnElement.innerText;
             btnElement.innerText = "Adicionado ✓";
-            btnElement.classList.add('bg-terracotta');
+            btnElement.classList.add('bg-gold', 'text-white', 'border-gold');
+            btnElement.classList.remove('bg-white', 'text-midnight', 'border-midnight');
             setTimeout(() => {
                 btnElement.innerText = originalText;
-                btnElement.classList.remove('bg-terracotta');
+                btnElement.classList.remove('bg-gold', 'text-white', 'border-gold');
+                btnElement.classList.add('bg-white', 'text-midnight', 'border-midnight');
             }, 1500);
         }
 
@@ -351,7 +343,7 @@ window.updateCart = function() {
 
     if (cart.length === 0) {
         container.innerHTML = `
-            <div class="h-full flex flex-col items-center justify-center text-ink/40 space-y-4 mt-20">
+            <div class="h-full flex flex-col items-center justify-center text-gray-400 space-y-4 mt-20">
                 <i class="fas fa-shopping-bag text-5xl opacity-30 mb-4"></i>
                 <p class="font-light text-lg">Sua sacola está vazia.</p>
             </div>`;
@@ -362,20 +354,20 @@ window.updateCart = function() {
             count += item.qtd;
 
             const imgInCart = item.image && item.image !== ""
-                ? `<img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain p-1 border border-line">`
-                : `<div class="w-16 h-16 bg-sand flex items-center justify-center text-[8px] text-ink/40 font-serif text-center p-1 border border-line">sem<br>imagem</div>`;
+                ? `<img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain p-1 border rounded-sm">`
+                : `<div class="w-16 h-16 bg-gray-100 rounded-sm flex items-center justify-center text-[8px] text-gray-400 font-serif uppercase text-center p-1 border">sem<br>imagem</div>`;
 
             const sector = getSectorMeta(item.brand);
 
             container.innerHTML += `
-                <div class="flex gap-4 items-center border-b border-line pb-4">
+                <div class="flex gap-4 items-center border-b border-gray-100 pb-4">
                     ${imgInCart}
                     <div class="flex-1">
-                        <p class="font-serif text-sm">${item.name}</p>
-                        <p class="text-xs text-ink/50 mt-1">${sector.label} · Qtd: ${item.qtd}</p>
-                        <p class="text-sm font-semibold text-terracotta mt-1">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+                        <p class="font-serif text-sm text-midnight">${item.name}</p>
+                        <p class="text-xs text-gray-500 mt-1">${sector.label} · Qtd: ${item.qtd}</p>
+                        <p class="text-sm font-semibold text-gold mt-1">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
                     </div>
-                    <button onclick="window.removeFromCart(${index})" class="text-ink/30 hover:text-red-500 transition-colors p-2"><i class="fas fa-trash"></i></button>
+                    <button onclick="window.removeFromCart(${index})" class="text-gray-300 hover:text-red-500 transition-colors p-2"><i class="fas fa-trash"></i></button>
                 </div>
             `;
         });

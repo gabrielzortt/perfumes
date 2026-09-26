@@ -9,11 +9,11 @@
  */
 
 export const DEFAULT_SECTORS = [
-    { key: 'destaque', label: 'Destaques', icon: '👑', order: 0 },
-    { key: 'arabes',   label: 'Árabes',    icon: '🌙', order: 1 },
-    { key: 'brand',    label: 'Brand',     icon: '⭐', order: 2 },
-    { key: 'oculos',   label: 'Óculos',    icon: '🕶️', order: 3 },
-    { key: 'bones',    label: 'Bonés',     icon: '🧢', order: 4 },
+    { key: 'destaque', label: 'Destaques', icon: '👑', order: 0, desc: 'Seleção especial dos produtos favoritos da casa. O melhor da nossa curadoria, reunido para você.' },
+    { key: 'arabes',   label: 'Árabes',    icon: '🌙', order: 1, desc: 'Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá.' },
+    { key: 'brand',    label: 'Brand',     icon: '⭐', order: 2, desc: 'Uma fragrância exclusiva selecionada a dedo. A assinatura perfeita para marcar a sua presença onde quer que você vá.' },
+    { key: 'oculos',   label: 'Óculos',    icon: '🕶️', order: 3, desc: 'Estilo que completa o look. Peça selecionada com cuidado para quem valoriza elegância no detalhe.' },
+    { key: 'bones',    label: 'Bonés',     icon: '🧢', order: 4, desc: 'Atitude e estilo em um só acessório. Para quem leva o visual a sério em qualquer ocasião.' },
 ];
 
 // Variantes antigas/acentuadas gravadas em produtos legados → chave canônica atual
